@@ -1,0 +1,21 @@
+apiVersion: apiregistration.k8s.io/v1beta1
+kind: APIService
+metadata:
+  name: v1beta1.custom.metrics.k8s.io
+spec:
+  # this tells the aggregator how to verify that your API server is
+  # actually who it claims to be
+  caBundle: BASE64 
+  # these specify which group and version you're registering the API
+  # server for
+  group: custom.metrics.k8s.io
+  version: v1beta1
+  # these control how the aggregator prioritizes your registration.
+  # it's not particularly relevant in this case.
+  groupPriorityMinimum: 1000
+  versionPriority: 10
+  # finally, this points the aggregator at the service for your
+  # API server that you created
+  service:
+    name: prometheus
+    namespace: prom

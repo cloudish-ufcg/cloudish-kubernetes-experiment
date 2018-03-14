@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus
+  template:
+    metadata:
+      labels:
+        app: prometheus
+      annotations:
+        # based on your Prometheus config above, this tells prometheus
+        # to scrape this pod for metrics on port 9091 at "/metrics"
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9091"
+        prometheus.io/path: "/metrics"
+    spec:
+      serviceAccountName: prom-cm-adapter
+      containers:
+      - image: directxman12/k8s-prometheus-adapter-amd64:latest 
+        name: cm-adapter
+        args:
+        - --secure-port=6443
+        - --logtostderr=true
+        - --tls-cert-file=/var/run/serving-certs/tls.crt
+        - --tls-private-key-file=/var/run/serving-certs/tls.key
+        - --prometheus-url=http://localhost:9090
+        - --metrics-relist-interval=1m
+        - --rate-interval=30s
+        - --discovery-interval=10m
+        - --v=4
+        ports:
+        - containerPort: 6443
+          name: https
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /var/run/serving-certs
+          name: serving-certs
+          readOnly: true
+      - image: prom/prometheus:v2.2.0-rc.0
+        name: prometheus
+        args:
+        # point prometheus at the configuration that you mount in below
+        - --config.file=/etc/prometheus/prometheus.yml
+        ports:
+        # this port exposes the dashboard and the HTTP API
+        - containerPort: 9090
+          name: prom-web
+          protocol: TCP
+        volumeMounts:
+        # you'll mount your ConfigMap volume at /etc/prometheus
+        - mountPath: /etc/prometheus
+          name: config-volume
+      - image: prom/pushgateway
+        name: pushgateway
+        ports:
+        - containerPort: 9091
+          name: http
+      volumes:
+      # make your configmap available as a volume, so that you can
+      # mount in the Prometheus config from earlier
+      - name: config-volume
+        configMap:
+          name: prometheus
+      - name: serving-certs
+        secret:
+          secretName: serving-cm-adapter

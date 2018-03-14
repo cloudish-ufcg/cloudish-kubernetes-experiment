@@ -25,7 +25,7 @@ done
 
 kubectl create namespace prom
 kubectl -n prom create serviceaccount prom-cm-adapter
-kubectl -n prom create configmap prometheus --from-file=prometheus.yml=prom-cfg-pg.yaml
+kubectl -n prom create configmap prometheus --from-file=prometheus.yml=conf/prom-cfg.yaml
 
 # Creating certificates
 
@@ -44,26 +44,26 @@ kubectl create rolebinding prom-ext-auth-reader --role="extension-apiserver-auth
 
 kubectl -n prom create secret tls serving-cm-adapter --cert=/etc/kubernetes/pki/apiserver.pem --key=/etc/kubernetes/pki/apiserver-key.pem
 
-kubectl create -f resource-lister.yaml
-kubectl create -f resource-rolebinding.yaml
-kubectl create -f delegator-clusterrolebinding.yaml
+kubectl create -f conf/resource-lister.yaml
+kubectl create -f conf/resource-rolebinding.yaml
+kubectl create -f conf/delegator-clusterrolebinding.yaml
 kubectl create rolebinding -n kube-system cm-adapter-resource-lister --role=extension-apiserver-authentication-reader --serviceaccount=prom:prom-cm-adapter
 
 # Launching the deployment
 
-kubectl -n prom create -f prom-adapter.deployment.yaml
+kubectl -n prom create -f conf/prom-adapter.deployment.yaml
 kubectl -n prom create service clusterip prometheus --tcp=443:6443
 
 PODNAME=`kubectl get pods -n prom | grep prometheus | awk '{print $1}'`
 
-kubectl expose pod $PODNAME -n prom --port=9090 --target-port=9090 --name prometheusapi
-kubectl expose pod $PODNAME -n prom --port=9091 --target-port=9091 --name pushgateway
+kubectl expose pod $PODNAME -n prom --port=9090 --name prometheusapi --type NodePort
+kubectl expose pod $PODNAME -n prom --port=9091 --name pushgateway --type NodePort
 
 # Registering the prometheus API
 
-BASE=`base64 --w 0 < /etc/kubernetes/pki/ca.crt`; cat cm-registration-base.yaml | sed "s/BASE64/$BASE/g" > cm-registration.yaml
+BASE=`base64 --w 0 < /etc/kubernetes/pki/ca.crt`; cat conf/cm-registration-base.yaml | sed "s/BASE64/$BASE/g" > conf/cm-registration.yaml
 
-kubectl apply -f cm-registration.yaml
+kubectl apply -f conf/cm-registration.yaml
 
 kubectl get services --all-namespaces
 
