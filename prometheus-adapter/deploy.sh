@@ -16,7 +16,6 @@ kubectl apply -f https://docs.projectcalico.org/v2.5/getting-started/kubernetes/
 sleep 60
 
 COUNTER=`kubectl get pods --all-namespaces | grep -v NAME | awk '{print $4}' | grep -v Running | wc -l`
-echo $COUNTER
 while [  $COUNTER -ne 0 ]; do
 	sleep 1
 	COUNTER=`kubectl get pods --all-namespaces | grep -v NAME | awk '{print $4}' | grep -v Running | wc -l`
