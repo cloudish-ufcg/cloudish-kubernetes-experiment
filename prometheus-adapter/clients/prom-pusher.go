@@ -23,8 +23,8 @@ var (
 
 func main() {
 
-	fabioPushMetric.Set(5000)
-	fabioAddMetric.Set(600)
+	fabioPushMetric.Set(100)
+	fabioAddMetric.Set(300)
 
 	//if err := push.Collectors("fabio_job", push.HostnameGroupingKey(), gatewayUrl, fabioPushMetric); 
 	//	err != nil {

@@ -16,9 +16,12 @@ import (
 	"fmt"
 	"context"
 	"time"
+	//"reflect"
 
 	promApi "github.com/prometheus/client_golang/api/prometheus/v1"
 	"github.com/prometheus/client_golang/api"
+
+	"github.com/prometheus/common/model"
 )
 
 
@@ -32,10 +35,25 @@ func main() {
 	promClient, _ := api.NewClient(cfg)
 	newApi := promApi.NewAPI(promClient)
 
-	query := "metric_push"
+	query := "metric_pushadd"
 	res, _ := newApi.Query(context.Background(), query, time.Now())
 
 	//fmt.Println(err)
 	fmt.Println(res)
+	//fmt.Println(reflect.TypeOf(res))
 
+	vectorVal := res.(model.Vector)
+	fmt.Println(len(vectorVal))
+	fmt.Println(vectorVal[0])
+
+	metric := vectorVal[0].Metric
+	value := vectorVal[0].Value
+	timestamp := vectorVal[0].Timestamp
+
+
+	//for _, elem := range vectorVal {
+	//	fmt.Println(elem.Metric)
+	//	fmt.Println(elem.Value)
+	//	fmt.Println(elem.Timestamp)
+	//}
 }
