@@ -1,0 +1,54 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: kube-watch
+  name: kube-watch
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kube-watch
+  template:
+    metadata:
+      labels:
+        app: kube-watch
+    spec:
+      containers:
+      - args:
+        - run
+        - --in-cluster
+        - --url
+        - https://hooks.slack.com/services/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
+        - --slack-channel-url
+        - https://hooks.slack.com/services/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
+        - --pushgateway-address
+        - 10.11.4.122:31315
+        - --api-address
+        - http://10.11.4.122:31788
+
+        # don't forget http
+        #- --api-address
+        #- http://10.11.4.122:30094
+        - --watch-kind
+        - Pod
+        # And all flags passed to `kube-watch run` command
+        #image: cloudishjoao/kube-watch:v0.0.34
+        image: fabiomorais/kube-watch:v0.0.7
+        imagePullPolicy: Always
+        name: kube-watch
+
+#---
+#
+#apiVersion: rbac.authorization.k8s.io/v1beta1
+#kind: ClusterRoleBinding
+#metadata:
+#  name: watcher-role
+#roleRef:
+#  apiGroup: rbac.authorization.k8s.io
+#  kind: ClusterRole
+#  name: view
+#subjects:
+#- kind: ServiceAccount
+#  name: default
+#  namespace: default

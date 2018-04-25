@@ -1,0 +1,16 @@
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  creationTimestamp: 2017-05-24T12:34:15Z
+  name: cm-adapter-resource-lister
+  resourceVersion: "77256"
+  selfLink: /apis/rbac.authorization.k8s.io/v1beta1/clusterrolebindingsprometheus
+  uid: 4c25a2e6-407d-11e7-b541-025837d8b363
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: resource-lister
+subjects:
+- kind: ServiceAccount
+  name: prom-cm-adapter
+  namespace: prom

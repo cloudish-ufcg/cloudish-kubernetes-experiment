@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    scheduler.alpha.kubernetes.io/critical-pod: ""
+  creationTimestamp: null
+  labels:
+    component: kube-scheduler
+    tier: control-plane
+  name: kube-scheduler
+  namespace: kube-system
+spec:
+  containers:
+  - command:
+    - kube-scheduler
+    - --address=127.0.0.1
+    - --leader-elect=true
+    - --feature-gates=PodPriority=true
+    - --kubeconfig=/etc/kubernetes/scheduler.conf
+    - --v=5
+    image: gcr.io/google_containers/kube-scheduler-amd64:v1.9.1
+    #image: fabiomorais/kube-scheduler:v0.0.0
+    #image: cloudishjoao/kube-scheduler:v0.0.0
+    env:
+    - name: PROM_ADDRESS
+      value: "http://localhost:NEWPORT"
+    livenessProbe:
+      failureThreshold: 8
+      httpGet:
+        host: 127.0.0.1
+        path: /healthz
+        port: 10251
+        scheme: HTTP
+      initialDelaySeconds: 15
+      timeoutSeconds: 15
+    name: kube-scheduler
+    resources:
+      requests:
+        cpu: 100m
+    volumeMounts:
+    - mountPath: /etc/kubernetes/scheduler.conf
+      name: kubeconfig
+      readOnly: true
+  hostNetwork: true
+  volumes:
+  - hostPath:
+      path: /etc/kubernetes/scheduler.conf
+      type: FileOrCreate
+    name: kubeconfig
+status: {}
