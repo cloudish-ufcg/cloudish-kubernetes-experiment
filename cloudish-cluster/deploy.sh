@@ -10,25 +10,25 @@ cp /etc/kubernetes/admin.conf $HOME/
 chown $(id -u):$(id -g) $HOME/admin.conf
 export KUBECONFIG=$HOME/admin.conf
 
-sleep 5
+sleep 10
 
 echo ""
 echo ">>> Configuring preemption"
 echo ""
 cp conf/services/kube-apiserver.yaml /etc/kubernetes/manifests/
-cp conf/services/kube-scheduler-base.yaml /etc/kubernetes/manifests/
+cp conf/services/kube-scheduler-base.yaml /etc/kubernetes/manifests/kube-scheduler.yaml
 cp conf/services/kube-controller-manager.yaml /etc/kubernetes/manifests/
 cp conf/services/10-kubeadm.conf /etc/systemd/system/kubelet.service.d/
 
 systemctl restart kubelet.service
 systemctl daemon-reload
 
-sleep 5
+sleep 60
 
 # creating priority classes 
-#kubectl create -f conf/priority_classes/services_priority_class.yaml
-#kubectl create -f conf/priority_classes/low_priority_class.yaml
-#kubectl create -f conf/priority_classes/high_priority_class.yaml
+kubectl create -f conf/priority_classes/services_priority_class.yaml
+kubectl create -f conf/priority_classes/low_priority_class.yaml
+kubectl create -f conf/priority_classes/high_priority_class.yaml
 
 #echo ""
 #echo ">>> Taint master to be schedulable"
@@ -39,7 +39,9 @@ sleep 5
 echo ""
 echo ">>> Starting network services"
 echo ""
-kubectl apply -f https://docs.projectcalico.org/v2.5/getting-started/kubernetes/installation/hosted/kubeadm/1.6/calico.yaml
+#kubectl apply -f https://docs.projectcalico.org/v2.5/getting-started/kubernetes/installation/hosted/kubeadm/1.6/calico.yaml
+
+kubectl apply -f https://docs.projectcalico.org/v3.1/getting-started/kubernetes/installation/hosted/kubeadm/1.7/calico.yaml
 
 sleep 60
 
@@ -85,10 +87,7 @@ kubectl create rolebinding -n kube-system cm-adapter-resource-lister --role=exte
 kubectl -n prom create -f conf/prometheus/prom-adapter.deployment.yaml
 kubectl -n prom create service clusterip prometheus --tcp=443:6443
 
-PODNAME=`kubectl get pods -n prom | grep prometheus | awk '{print $1}'`
-
-kubectl expose pod $PODNAME -n prom --port=9090 --name prometheusapi --type NodePort
-kubectl expose pod $PODNAME -n prom --port=9091 --name pushgateway --type NodePort
+sleep 10
 
 echo ""
 echo ">>> Registering the prometheus API"
@@ -97,31 +96,48 @@ BASE=`base64 --w 0 < /etc/kubernetes/pki/ca.crt`; cat conf/prometheus/cm-registr
 
 kubectl apply -f conf/prometheus/cm-registration.yaml
 
+PODNAME=`kubectl get pods -n prom | grep prometheus | awk '{print $1}'`
+
+kubectl expose pod $PODNAME -n prom --port=9090 --name prometheusapi --type NodePort
+kubectl expose pod $PODNAME -n prom --port=9091 --name pushgateway --type NodePort
+
 kubectl get services --all-namespaces
 
-sleep 15
+sleep 10
 
+echo ""
 PROMAPI=`kubectl get services --all-namespaces | grep prometheusapi | awk '{print $4}'`
-
+echo ">>> Curl prometheus API on $PROMAPI:9090"
+echo ""
 curl $PROMAPI:9090/api/v1/label/__name__/values
 
+echo ""
 GATEWAY=`kubectl get services --all-namespaces | grep pushgateway | awk '{print $4}'`
-
+echo ">>> Curl pushgateway API on $GATEWAY:9090"
+echo ""
 curl $GATEWAY:9091/metrics
 
 echo ""
 echo ">>> Kube-watch configuration"
 echo ""
-kubectl create -f conf/kubewatch/kube-watch.yaml
-kubectl create -f conf/kubewatch/kube-watch-role.yaml
+kubectl create namespace kubewatch
+
+HOSTIP=`ifconfig ens3 | grep "inet addr" | sed 's/:/ /g' | awk '{print $3}'` 
+PROMAPI_PORT=`kubectl get services --all-namespaces | grep prometheusapi | awk '{print $6}' | sed 's/:/ /g' | sed 's/\// /g' | awk '{print $2}'`
+GATEWAY_PORT=`kubectl get services --all-namespaces | grep pushgateway | awk '{print $6}' | sed 's/:/ /g' | sed 's/\// /g' | awk '{print $2}'`
+
+cat conf/kubewatch/kube-watch-base.yaml | sed "s/GATEWAY_ADDR/$HOSTIP:$GATEWAY_PORT/g" | sed "s/API_ADDR/$HOSTIP:$PROMAPI_PORT/g" > conf/kubewatch/kube-watch.yaml
+
+kubectl -n kubewatch create -f conf/kubewatch/kube-watch.yaml
+kubectl -n kubewatch create -f conf/kubewatch/kube-watch-role.yaml
 
 echo ""
 echo ">>> Configuring prometheus for scheduler"
 echo ""
-PROMAPI_PORT=`kubectl get services --all-namespaces | grep prometheusapi | awk '{print $6}' | sed 's/:/ /g' | sed 's/\// /g' | awk '{print $2}'`
 cat conf/services/kube-scheduler-base.yaml | sed "s/NEWPORT/$PROMAPI_PORT/g" > conf/services/kube-scheduler.yaml
-
 cp conf/services/kube-scheduler.yaml /etc/kubernetes/manifests/
+
+sleep 10
 
 echo ""
 echo ">>> Restarting services"

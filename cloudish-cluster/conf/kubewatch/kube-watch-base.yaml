@@ -23,9 +23,9 @@ spec:
         - --slack-channel-url
         - https://hooks.slack.com/services/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
         - --pushgateway-address
-        - 10.11.4.122:31315
+        - GATEWAY_ADDR
         - --api-address
-        - http://10.11.4.122:31788
+        - http://API_ADDR
 
         # don't forget http
         #- --api-address
@@ -37,18 +37,3 @@ spec:
         image: fabiomorais/kube-watch:v0.0.7
         imagePullPolicy: Always
         name: kube-watch
-
-#---
-#
-#apiVersion: rbac.authorization.k8s.io/v1beta1
-#kind: ClusterRoleBinding
-#metadata:
-#  name: watcher-role
-#roleRef:
-#  apiGroup: rbac.authorization.k8s.io
-#  kind: ClusterRole
-#  name: view
-#subjects:
-#- kind: ServiceAccount
-#  name: default
-#  namespace: default
