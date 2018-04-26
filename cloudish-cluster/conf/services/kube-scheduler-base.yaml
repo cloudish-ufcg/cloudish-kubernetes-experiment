@@ -24,6 +24,8 @@ spec:
     env:
     - name: PROM_ADDRESS
       value: "http://localhost:NEWPORT"
+    - name: SAFETY_MARGIN
+      value: "0.0"
     livenessProbe:
       failureThreshold: 8
       httpGet:
