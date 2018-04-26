@@ -16,7 +16,7 @@ cat <<EOF >/etc/apt/sources.list.d/kubernetes.list
 deb http://apt.kubernetes.io/ kubernetes-xenial main
 EOF
 apt-get update
-apt-get install -y kubelet kubeadm kubectl kubernetes-cni
+apt-get install -y kubelet=1.9.1-00 kubeadm=1.9.1-00 kubectl=1.9.1-00 kubernetes-cni
 
 # Install go
 sudo apt-get update
@@ -26,8 +26,8 @@ sudo tar -xvf go1.9.4.linux-amd64.tar.gz
 sudo mv go /usr/local
 
 # edit .profile
-export GOROOT=/usr/local/go
-export GOPATH=/usr/share/go/bin
-export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+echo "export GOROOT=/usr/local/go" >> ~/.profile
+echo "export GOPATH=/usr/share/go/bin" >> ~/.profile
+echo "export PATH=$GOPATH/bin:$GOROOT/bin:$PATH" >> ~/.profile
 source ~/.profile
 echo $PATH
