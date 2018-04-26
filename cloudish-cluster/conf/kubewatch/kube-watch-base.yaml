@@ -26,7 +26,8 @@ spec:
         - GATEWAY_ADDR
         - --api-address
         - http://API_ADDR
-
+        - --waiting-tolerance
+        - "0.0"
         # don't forget http
         #- --api-address
         #- http://10.11.4.122:30094
@@ -34,6 +35,6 @@ spec:
         - Pod
         # And all flags passed to `kube-watch run` command
         #image: cloudishjoao/kube-watch:v0.0.34
-        image: fabiomorais/kube-watch:v0.0.7
+        image: fabiomorais/kube-watch:v0.0.1
         imagePullPolicy: Always
         name: kube-watch
