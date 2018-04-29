@@ -1,0 +1,31 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+ name: $NAME
+ labels:
+   app: nginx
+spec:
+ replicas: 1
+ selector:
+   matchLabels:
+     app: nginx
+ template:
+   metadata:
+     labels:
+       app: nginx
+   spec:
+     containers:
+     - name: nginx
+       image: nginx
+       imagePullPolicy: IfNotPresent
+       ports:
+       - containerPort: 80
+       resources:
+         limits:
+           cpu: $CPU
+           memory: $MEM
+         requests:
+           cpu: $CPU
+           memory: $MEM
+     priorityClassName: $PRIORITY
+
