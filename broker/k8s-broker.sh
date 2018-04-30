@@ -17,7 +17,7 @@ fi
 if [ "$2" =  "create" ]; then
 echo "Creating $3 with CPU $4, Memory $5, and priority $6 on time $NOW!"
 sed -e 's/$NAME/'$3'/; s/$CPU/'$4'/; s/$MEM/'$5'/; s/$PRIORITY/'$6'/' deploy.yaml > submit_$3.yaml
-kubectl create -f submit.yaml
+kubectl create -f submit_$3.yaml
 
 elif [ "$2" = "delete" ]; then 
 echo "Deleting $3! on time $NOW!"
