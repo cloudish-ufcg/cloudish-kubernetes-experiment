@@ -23,6 +23,10 @@ import (
         "k8s.io/client-go/tools/clientcmd"
         metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
         "k8s.io/client-go/kubernetes"
+	appsv1beta2 "k8s.io/api/apps/v1beta2"
+
+	"k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/resource"
 )
 
 var (
@@ -38,6 +42,8 @@ var (
 	promClient, _ = api.NewClient(cfg)
 	newApi        = promApi.NewAPI(promClient)
 	layout        = "2006-01-02 15:04:05 +0000 UTC"
+
+	replicas = int32(1)
 )
 
 func GetKubeClient(confPath string) (*kubernetes.Clientset) {
@@ -61,8 +67,39 @@ func main() {
 
 	clientset := GetKubeClient("/root/admin.conf")
 
-        deploy, _ := clientset.AppsV1beta1().Deployments("kubewatch").Get("kube-watch", metav1.GetOptions{})
-        fmt.Println(deploy)
+        //deploy, _ := clientset.AppsV1beta2().Deployments("kubewatch").Get("kube-watch", metav1.GetOptions{})
+        //fmt.Println(deploy)
+
+
+	rl := v1.ResourceList{v1.ResourceName(v1.ResourceMemory): resource.MustParse("100Mi"),
+	v1.ResourceName(v1.ResourceCPU): resource.MustParse("3.0")}
+
+	podStub := v1.PodTemplateSpec{
+		ObjectMeta: metav1.ObjectMeta{Labels: map[string]string{"app": "nginx"}, Annotations: map[string]string{"slo": "1.0"}},
+		Spec:       v1.PodSpec{Containers:
+			[]v1.Container{{Name: "nginx",
+								Image: "nginx",
+								Resources: v1.ResourceRequirements{
+									Limits: rl,
+									Requests: rl,
+								},}},
+		PriorityClassName: "low-priority"},
+	}
+
+	deploymentStub := &appsv1beta2.Deployment{
+		ObjectMeta: metav1.ObjectMeta{Name: "deploy-test-high-priority"},
+		Spec:       appsv1beta2.DeploymentSpec{Selector: &metav1.LabelSelector{MatchLabels: podStub.Labels}, Replicas: &replicas, Template: podStub},
+	}
+
+
+	clientset.AppsV1beta2().Deployments("default").Create(deploymentStub)
+
+	clientset.AppsV1beta2().Deployments("default").Delete("deploy-test", &metav1.DeleteOptions{})
+
+
+	deploy_test, _ := clientset.AppsV1beta2().Deployments("default").Get("deploy-test", metav1.GetOptions{})
+        fmt.Println(deploy_test)
+
 
 	var time_ref int = 0
 	file, err := ioutil.ReadFile("input.example")
