@@ -67,41 +67,7 @@ func main() {
 
 	clientset := GetKubeClient("/root/admin.conf")
 
-        //deploy, _ := clientset.AppsV1beta2().Deployments("kubewatch").Get("kube-watch", metav1.GetOptions{})
-        //fmt.Println(deploy)
-
-
-	rl := v1.ResourceList{v1.ResourceName(v1.ResourceMemory): resource.MustParse("100Mi"),
-	v1.ResourceName(v1.ResourceCPU): resource.MustParse("3.0")}
-
-	podStub := v1.PodTemplateSpec{
-		ObjectMeta: metav1.ObjectMeta{Labels: map[string]string{"app": "nginx"}, Annotations: map[string]string{"slo": "1.0"}},
-		Spec:       v1.PodSpec{Containers:
-			[]v1.Container{{Name: "nginx",
-								Image: "nginx",
-								Resources: v1.ResourceRequirements{
-									Limits: rl,
-									Requests: rl,
-								},}},
-		PriorityClassName: "low-priority"},
-	}
-
-	deploymentStub := &appsv1beta2.Deployment{
-		ObjectMeta: metav1.ObjectMeta{Name: "deploy-test-high-priority"},
-		Spec:       appsv1beta2.DeploymentSpec{Selector: &metav1.LabelSelector{MatchLabels: podStub.Labels}, Replicas: &replicas, Template: podStub},
-	}
-
-
-	clientset.AppsV1beta2().Deployments("default").Create(deploymentStub)
-
-	clientset.AppsV1beta2().Deployments("default").Delete("deploy-test", &metav1.DeleteOptions{})
-
-
-	deploy_test, _ := clientset.AppsV1beta2().Deployments("default").Get("deploy-test", metav1.GetOptions{})
-        fmt.Println(deploy_test)
-
-
-	var time_ref int = 0
+	var time_ref = 0
 	file, err := ioutil.ReadFile("input.example")
 
 	if err == nil {
@@ -122,25 +88,31 @@ func main() {
 			if string(record[1]) != "jid" {
 
 				timestamp, _ := strconv.Atoi(string(record[0]))
+				slo := string(record[11])
+				cpuReq := string(record[8])
+				memReq := string(record[9])
 
 				controller_name := string(record[1]) + "_" + string(record[2])
 				expectedRuntime, _ := strconv.Atoi(string(record[6]))
 
-				// TODO call util func to create a yaml (a string) based on the controller name and requeriments
+				deployment := getDeploymentSpec(controller_name, cpuReq, memReq, slo)
+				fmt.Println("Reading new task...")
+				fmt.Println("Deployment %v, cpu: %v, mem: %v", "slo: %v", controller_name, cpuReq, memReq, slo)
 
 				if timestamp == time_ref {
-					fmt.Println(timestamp, time_ref, controller_name, expectedRuntime)
-					// TODO call kubernetes client to create the pod
-					// TODO call a gorotine to manage the controller termination
+					fmt.Println("Time: ", timestamp)
+					fmt.Println("Creating deployment ", controller_name)
+					clientset.AppsV1beta2().Deployments("default").Create(deployment)
 					go manageControllerTermination(controller_name, expectedRuntime, &wg)
+
 				} else {
 					wait_time := int(timestamp - time_ref)
 					time_ref = timestamp
 					fmt.Println("")
 					time.Sleep(time.Duration(wait_time) * time.Second)
-					fmt.Println(timestamp, time_ref, controller_name, expectedRuntime)
-					// TODO call kubernetes client to create the pod
-					// TODO call a gorotine to manage the controller termination
+					fmt.Println("Time: ", timestamp)
+					fmt.Println("Creating deployment ", controller_name)
+					clientset.AppsV1beta2().Deployments("default").Create(deployment)
 					go manageControllerTermination(controller_name, expectedRuntime, &wg)
 				}
 
@@ -150,19 +122,18 @@ func main() {
 
 	// TODO wait the experiment timeout and terminate all controllers
 	wg.Wait()
-	fmt.Println("finished")
+	fmt.Println("Finished")
 }
 
 func manageControllerTermination(controllerName string, expectedRuntime int, wg *sync.WaitGroup) {
 	wg.Add(1)
-	runtime := 0
+
 	for {
-		runtime += 1
-		//runtime := getControllerRuntime(controllerName, time.Now().UTC())
+		runtime := getControllerRuntime(controllerName, time.Now().UTC())
 		if runtime >= expectedRuntime {
 			wg.Done()
-			fmt.Println("terminated", controllerName)
-			// TODO terminate controller via kubernetes go-client
+			fmt.Println("Deployment %v achieved runtime. Deleting...", controllerName)
+			clientset.AppsV1beta2().Deployments("default").Delete(controllerName, &metav1.DeleteOptions{})
 			break
 		} else {
 
@@ -211,4 +182,32 @@ func getControllerRuntime(controllerRefName string, timestampRef time.Time) int 
 	total_running_time := int(acc_runtime + act_runtime)
 
 	return total_running_time
+}
+
+func getDeploymentSpec(controllerRefName string,
+	cpuReq string, memReq string, slo string) (*appsv1beta2.Deployment){
+
+	rl := v1.ResourceList{v1.ResourceName(v1.ResourceMemory): resource.MustParse(memReq),
+		v1.ResourceName(v1.ResourceCPU): resource.MustParse(cpuReq)}
+
+	pod := v1.PodTemplateSpec{
+		ObjectMeta: metav1.ObjectMeta{Annotations: map[string]string{"slo": slo}},
+		Spec:       v1.PodSpec{Containers:
+		[]v1.Container{{Name: controllerRefName,
+						Image: "nginx",
+						Resources: v1.ResourceRequirements{
+							Limits: rl,
+							Requests: rl,
+			},}},
+			PriorityClassName: "low-priority"},
+	}
+
+	deployment := &appsv1beta2.Deployment{
+		ObjectMeta: metav1.ObjectMeta{Name: controllerRefName},
+		Spec:       appsv1beta2.DeploymentSpec{Replicas: &replicas, Template: pod},
+	}
+
+
+	return deployment
+
 }
