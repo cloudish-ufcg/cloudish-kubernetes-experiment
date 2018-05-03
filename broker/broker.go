@@ -17,6 +17,12 @@ import (
 	"github.com/prometheus/client_golang/api"
 	promApi "github.com/prometheus/client_golang/api/prometheus/v1"
 	"github.com/prometheus/common/model"
+
+
+	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
+        "k8s.io/client-go/tools/clientcmd"
+        metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+        "k8s.io/client-go/kubernetes"
 )
 
 var (
@@ -27,14 +33,36 @@ var (
 		RoundTripper: api.DefaultRoundTripper,
 	}
 
-	acc_runtime, act_runtime int64
+	acc_runtime, act_runtime int
 
 	promClient, _ = api.NewClient(cfg)
 	newApi        = promApi.NewAPI(promClient)
 	layout        = "2006-01-02 15:04:05 +0000 UTC"
 )
 
+func GetKubeClient(confPath string) (*kubernetes.Clientset) {
+
+        loadingRules := &clientcmd.ClientConfigLoadingRules{ExplicitPath: confPath}
+        loader := clientcmd.NewNonInteractiveDeferredLoadingClientConfig(loadingRules, &clientcmd.ConfigOverrides{})
+
+        clientConfig, err := loader.ClientConfig()
+        if err != nil {
+                panic(err)
+        }
+
+        kubeclient, err := kubernetes.NewForConfig(clientConfig)
+        if err != nil {
+                        panic(err)
+        }
+        return kubeclient
+}
+
 func main() {
+
+	clientset := GetKubeClient("/root/admin.conf")
+
+        deploy, _ := clientset.AppsV1beta1().Deployments("kubewatch").Get("kube-watch", metav1.GetOptions{})
+        fmt.Println(deploy)
 
 	var time_ref int = 0
 	file, err := ioutil.ReadFile("input.example")
@@ -92,8 +120,8 @@ func manageControllerTermination(controllerName string, expectedRuntime int, wg 
 	wg.Add(1)
 	runtime := 0
 	for {
-		//runtime += 1
-		runtime := getControllerRuntime(controllerName, time.Now().UTC())
+		runtime += 1
+		//runtime := getControllerRuntime(controllerName, time.Now().UTC())
 		if runtime >= expectedRuntime {
 			wg.Done()
 			fmt.Println("terminated", controllerName)
@@ -135,15 +163,15 @@ func getControllerRuntime(controllerRefName string, timestampRef time.Time) int 
 				time_ref, _ := time.Parse(layout, timestampRef.String())
 
 				elapsedTime := time_ref.Sub(time_event).Seconds()
-				act_runtime = act_runtime + int64(elapsedTime)
+				act_runtime = act_runtime + int(elapsedTime)
 			} else {
 				glog.V(1).Infof("killed:", string(elem.Metric["pod"]))
-				acc_runtime = acc_runtime + int64(elem.Value)
+				acc_runtime = acc_runtime + int(elem.Value)
 			}
 		}
 	}
 
-	total_running_time := int64(acc_runtime + act_runtime)
+	total_running_time := int(acc_runtime + act_runtime)
 
 	return total_running_time
 }
