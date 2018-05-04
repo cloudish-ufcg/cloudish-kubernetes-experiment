@@ -7,11 +7,12 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
-	"os"
+	//"os"
 	"strconv"
 	"strings"
 	"sync"
 	"time"
+	"crypto/rand"
 
 	"github.com/golang/glog"
 	"github.com/prometheus/client_golang/api"
@@ -27,23 +28,6 @@ import (
 
 	"k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
-)
-
-var (
-	wg sync.WaitGroup
-
-	cfg = api.Config{
-		Address:      os.Getenv("PROM_ADDRESS"),
-		RoundTripper: api.DefaultRoundTripper,
-	}
-
-	acc_runtime, act_runtime int
-
-	promClient, _ = api.NewClient(cfg)
-	newApi        = promApi.NewAPI(promClient)
-	layout        = "2006-01-02 15:04:05 +0000 UTC"
-
-	replicas = int32(1)
 )
 
 func GetKubeClient(confPath string) (*kubernetes.Clientset) {
@@ -63,12 +47,43 @@ func GetKubeClient(confPath string) (*kubernetes.Clientset) {
         return kubeclient
 }
 
+func tokenGenerator() string {
+	b := make([]byte, 6)
+	rand.Read(b)
+	return fmt.Sprintf("%x", b)
+}
+
+
+var (
+	wg sync.WaitGroup
+
+	/*cfg = api.Config{
+		Address:      os.Getenv("PROM_ADDRESS"),
+		RoundTripper: api.DefaultRoundTripper,
+	}*/
+
+	cfg = api.Config{
+                Address:      "http://10.11.4.122:32409",
+                RoundTripper: api.DefaultRoundTripper,
+        }
+
+
+	acc_runtime, act_runtime int
+
+	promClient, _ = api.NewClient(cfg)
+	newApi        = promApi.NewAPI(promClient)
+	layout        = "2006-01-02 15:04:05 +0000 UTC"
+
+	replicas = int32(1)
+
+	clientset = GetKubeClient("/root/admin.conf")
+)
+
+
 func main() {
 
-	clientset := GetKubeClient("/root/admin.conf")
-
 	var time_ref = 0
-	file, err := ioutil.ReadFile("input.example")
+	file, err := ioutil.ReadFile("input.example2")
 
 	if err == nil {
 
@@ -92,7 +107,8 @@ func main() {
 				cpuReq := string(record[8])
 				memReq := string(record[9])
 
-				controller_name := string(record[1]) + "_" + string(record[2])
+				//controller_name := string(record[1]) + "-" + string(record[2])
+				controller_name := tokenGenerator()
 				expectedRuntime, _ := strconv.Atoi(string(record[6]))
 
 				deployment := getDeploymentSpec(controller_name, cpuReq, memReq, slo)
@@ -103,6 +119,7 @@ func main() {
 					fmt.Println("Time: ", timestamp)
 					fmt.Println("Creating deployment ", controller_name)
 					clientset.AppsV1beta2().Deployments("default").Create(deployment)
+					
 					go manageControllerTermination(controller_name, expectedRuntime, &wg)
 
 				} else {
@@ -132,7 +149,7 @@ func manageControllerTermination(controllerName string, expectedRuntime int, wg 
 		runtime := getControllerRuntime(controllerName, time.Now().UTC())
 		if runtime >= expectedRuntime {
 			wg.Done()
-			fmt.Println("Deployment %v achieved runtime. Deleting...", controllerName)
+			fmt.Println("Deployment achieved runtime. Deleting...", controllerName)
 			clientset.AppsV1beta2().Deployments("default").Delete(controllerName, &metav1.DeleteOptions{})
 			break
 		} else {
@@ -147,7 +164,6 @@ func getControllerRuntime(controllerRefName string, timestampRef time.Time) int 
 
 	acc_runtime = 0
 	act_runtime = 0
-
 	query := `running_time{controller="` + controllerRefName + `"}`
 	result, _ := newApi.Query(context.Background(), query, timestampRef)
 	vectorVal := result.(model.Vector)
@@ -187,11 +203,11 @@ func getControllerRuntime(controllerRefName string, timestampRef time.Time) int 
 func getDeploymentSpec(controllerRefName string,
 	cpuReq string, memReq string, slo string) (*appsv1beta2.Deployment){
 
-	rl := v1.ResourceList{v1.ResourceName(v1.ResourceMemory): resource.MustParse(memReq),
-		v1.ResourceName(v1.ResourceCPU): resource.MustParse(cpuReq)}
+	rl := v1.ResourceList{v1.ResourceName(v1.ResourceMemory): resource.MustParse("50Mi"),
+		v1.ResourceName(v1.ResourceCPU): resource.MustParse("100m")}
 
 	pod := v1.PodTemplateSpec{
-		ObjectMeta: metav1.ObjectMeta{Annotations: map[string]string{"slo": slo}},
+		ObjectMeta: metav1.ObjectMeta{Labels: map[string]string{"app": "nginx"}, Annotations: map[string]string{"slo": slo}},
 		Spec:       v1.PodSpec{Containers:
 		[]v1.Container{{Name: controllerRefName,
 						Image: "nginx",
@@ -204,7 +220,7 @@ func getDeploymentSpec(controllerRefName string,
 
 	deployment := &appsv1beta2.Deployment{
 		ObjectMeta: metav1.ObjectMeta{Name: controllerRefName},
-		Spec:       appsv1beta2.DeploymentSpec{Replicas: &replicas, Template: pod},
+		Spec:       appsv1beta2.DeploymentSpec{Selector: &metav1.LabelSelector{MatchLabels: pod.Labels}, Replicas: &replicas, Template: pod},
 	}
 
 
