@@ -18,4 +18,22 @@ EOF
 apt-get update
 apt-get install kubelet=1.9.1-00 kubeadm=1.9.1-00 kubectl=1.9.1-00 kubernetes-cni
 
+# Install go
+wget https://dl.google.com/go/go1.9.4.linux-amd64.tar.gz
+sudo tar -xvf go1.9.4.linux-amd64.tar.gz
+sudo mv go /usr/local
+
+# Install gcc
+apt install gcc
+
+# Configuring go paths (puth this in .profile)
+export GOROOT=/usr/local/go
+export GOPATH=/usr/share/go/bin
+export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+ 
+# Install go packages
+go get -u github.com/cloudflare/cfssl/cmd/cfssl
+go get -u github.com/cloudflare/cfssl/cmd/cfssljson
+
+
 
