@@ -181,5 +181,5 @@ systemctl restart kubelet.service
 systemctl daemon-reload
 
 sleep 10 
-kubectl taint node $hostname  dedicated=special-user:NoSchedule
+kubectl taint node `hostname`  dedicated=special-user:NoSchedule
 
