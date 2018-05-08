@@ -28,6 +28,8 @@ import (
 
 	"k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
+
+	"os/exec"
 )
 
 func GetKubeClient(confPath string) (*kubernetes.Clientset) {
@@ -144,17 +146,20 @@ func main() {
 
 func manageControllerTermination(controllerName string, expectedRuntime int, wg *sync.WaitGroup) {
 	wg.Add(1)
-
+	var runtime = 0
 	for {
-		runtime := getControllerRuntime(controllerName, time.Now().UTC())
+		runtime = getControllerRuntime(controllerName, time.Now().UTC())
 		if runtime >= expectedRuntime {
-			wg.Done()
+			fmt.Println("deleting", controllerName, runtime, expectedRuntime)
 			fmt.Println("Deployment achieved runtime. Deleting...", controllerName)
-			clientset.AppsV1beta2().Deployments("default").Delete(controllerName, &metav1.DeleteOptions{})
+			//clientset.AppsV1beta2().Deployments("default").Delete(controllerName, &metav1.DeleteOptions{})
+			cmd := exec.Command("/usr/bin/kubectl", "delete", "deploy", controllerName)
+			cmd.Run()
+			wg.Done()
 			break
 		} else {
-
-			time.Sleep(1 * time.Second)
+			waitTime := expectedRuntime - runtime
+			time.Sleep(time.Duration(waitTime) * time.Second)
 			fmt.Println("running", controllerName, runtime, expectedRuntime)
 		}
 	}
@@ -207,7 +212,7 @@ func getDeploymentSpec(controllerRefName string,
 		v1.ResourceName(v1.ResourceCPU): resource.MustParse("100m")}
 
 	pod := v1.PodTemplateSpec{
-		ObjectMeta: metav1.ObjectMeta{Labels: map[string]string{"app": "nginx"}, Annotations: map[string]string{"slo": slo}},
+		ObjectMeta: metav1.ObjectMeta{Labels: map[string]string{"app": "nginx"}, Annotations: map[string]string{"slo": slo, "controller": controllerRefName}},
 		Spec:       v1.PodSpec{Containers:
 		[]v1.Container{{Name: controllerRefName,
 						Image: "nginx",
@@ -227,3 +232,14 @@ func getDeploymentSpec(controllerRefName string,
 	return deployment
 
 }
+
+/*
+func alreadyDeleted(controllerName string) bool{
+	_, err := clientset.AppsV1beta2().Deployments("default").Get(controllerName, metav1.GetOptions{})
+	if (err != nil){
+		return true
+	} else {
+		return false
+	}
+}
+*/
