@@ -1,10 +1,31 @@
 #!/bin/bash
 
+#STRING="127.0.1.1 `hostname`"
+#if [ `grep -c $STRING /etc/hosts` -lt 1 ]
+#then
+#    echo 127.0.1.1 `hostname` >> /etc/hosts
+#fi
+
 echo ""
 echo ">>> Building infrastructure"
 echo ""
+#kubeadm reset
+#kubeadm init --kubernetes-version='v1.9.1'
 kubeadm reset
-kubeadm init --kubernetes-version='v1.9.1'
+systemctl stop kubelet
+systemctl stop docker
+rm -rf /var/lib/cni/
+rm -rf /var/lib/kubelet/*
+rm -rf /etc/cni/
+ifconfig cni0 down
+ifconfig flannel.1 down
+ifconfig docker0 down
+ip link delete cni0
+ip link delete flannel.1
+
+service docker restart
+
+kubeadm init --kubernetes-version='v1.9.1' --pod-network-cidr="10.244.0.0/16"
 
 cp /etc/kubernetes/admin.conf $HOME/
 chown $(id -u):$(id -g) $HOME/admin.conf
@@ -20,10 +41,23 @@ cp conf/services/kube-scheduler-base.yaml /etc/kubernetes/manifests/kube-schedul
 cp conf/services/kube-controller-manager.yaml /etc/kubernetes/manifests/
 cp conf/services/10-kubeadm.conf /etc/systemd/system/kubelet.service.d/
 
+sleep 10 
+
 systemctl restart kubelet.service
 systemctl daemon-reload
 
 sleep 60
+
+#echo ""
+#echo ">>> Taint master to be schedulable"
+#echo ""
+kubectl taint nodes --all node-role.kubernetes.io/master-
+#kubectl taint nodes kubernetes-master dedicated:NoSchedule-
+
+
+#mkdir -p $HOME/.kube
+#sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+#sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
 # creating priority classes 
 kubectl create -f conf/priority_classes/services_priority_class.yaml
@@ -40,8 +74,9 @@ echo ""
 echo ">>> Starting network services"
 echo ""
 #kubectl apply -f https://docs.projectcalico.org/v2.5/getting-started/kubernetes/installation/hosted/kubeadm/1.6/calico.yaml
-
-kubectl apply -f https://docs.projectcalico.org/v3.1/getting-started/kubernetes/installation/hosted/kubeadm/1.7/calico.yaml
+#kubectl apply -f https://docs.projectcalico.org/v3.1/getting-started/kubernetes/installation/hosted/kubeadm/1.7/calico.yaml
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+#curl -sSL https://raw.githubusercontent.com/coreos/flannel/v0.9.1/Documentation/kube-flannel.yml | sed "s/amd64/arm64/g" | sed "s/vxlan/udp/g" | kubectl create -f -
 
 sleep 60
 
@@ -144,4 +179,7 @@ echo ">>> Restarting services"
 echo ""
 systemctl restart kubelet.service
 systemctl daemon-reload
+
+sleep 10 
+kubectl taint node $hostname  dedicated=special-user:NoSchedule
 
