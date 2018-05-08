@@ -28,6 +28,8 @@ import (
 
 	"k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
+
+	"os/exec"
 )
 
 func GetKubeClient(confPath string) (*kubernetes.Clientset) {
@@ -144,17 +146,20 @@ func main() {
 
 func manageControllerTermination(controllerName string, expectedRuntime int, wg *sync.WaitGroup) {
 	wg.Add(1)
-
+	var runtime = 0
 	for {
-		runtime := getControllerRuntime(controllerName, time.Now().UTC())
+		runtime = getControllerRuntime(controllerName, time.Now().UTC())
 		if runtime >= expectedRuntime {
+			fmt.Println("deleting", controllerName, runtime, expectedRuntime)
 			fmt.Println("Deployment achieved runtime. Deleting...", controllerName)
-			clientset.AppsV1beta2().Deployments("default").Delete(controllerName, &metav1.DeleteOptions{})
+			//clientset.AppsV1beta2().Deployments("default").Delete(controllerName, &metav1.DeleteOptions{})
+			cmd := exec.Command("/usr/bin/kubectl", "delete", "deploy", controllerName)
+			cmd.Run()
 			wg.Done()
 			break
 		} else {
-
-			time.Sleep(1 * time.Second)
+			waitTime := expectedRuntime - runtime
+			time.Sleep(time.Duration(waitTime) * time.Second)
 			fmt.Println("running", controllerName, runtime, expectedRuntime)
 		}
 	}
