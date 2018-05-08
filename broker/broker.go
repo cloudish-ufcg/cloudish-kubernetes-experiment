@@ -65,7 +65,7 @@ var (
 	}*/
 
 	cfg = api.Config{
-                Address:      "http://10.11.4.122:32409",
+                Address:      "http://10.11.4.122:30348",
                 RoundTripper: api.DefaultRoundTripper,
         }
 
@@ -207,9 +207,13 @@ func getControllerRuntime(controllerRefName string, timestampRef time.Time) int 
 
 func getDeploymentSpec(controllerRefName string,
 	cpuReq string, memReq string, slo string) (*appsv1beta2.Deployment){
-
-	rl := v1.ResourceList{v1.ResourceName(v1.ResourceMemory): resource.MustParse("50Mi"),
-		v1.ResourceName(v1.ResourceCPU): resource.MustParse("100m")}
+	memReqFloat, _ := strconv.ParseFloat(memReq, 64)
+	memReqKi := memReqFloat * 1000000;
+	memReqStr := strconv.FormatFloat(memReqKi, 'f', -1, 64)
+	memRequest := memReqStr + "Ki"
+	fmt.Println(memRequest)
+	rl := v1.ResourceList{v1.ResourceName(v1.ResourceMemory): resource.MustParse(memRequest),
+		v1.ResourceName(v1.ResourceCPU): resource.MustParse(cpuReq)}
 
 	pod := v1.PodTemplateSpec{
 		ObjectMeta: metav1.ObjectMeta{Labels: map[string]string{"app": "nginx"}, Annotations: map[string]string{"slo": slo, "controller": controllerRefName}},
