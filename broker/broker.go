@@ -148,9 +148,9 @@ func manageControllerTermination(controllerName string, expectedRuntime int, wg 
 	for {
 		runtime := getControllerRuntime(controllerName, time.Now().UTC())
 		if runtime >= expectedRuntime {
-			wg.Done()
 			fmt.Println("Deployment achieved runtime. Deleting...", controllerName)
 			clientset.AppsV1beta2().Deployments("default").Delete(controllerName, &metav1.DeleteOptions{})
+			wg.Done()
 			break
 		} else {
 
@@ -207,7 +207,7 @@ func getDeploymentSpec(controllerRefName string,
 		v1.ResourceName(v1.ResourceCPU): resource.MustParse("100m")}
 
 	pod := v1.PodTemplateSpec{
-		ObjectMeta: metav1.ObjectMeta{Labels: map[string]string{"app": "nginx"}, Annotations: map[string]string{"slo": slo}},
+		ObjectMeta: metav1.ObjectMeta{Labels: map[string]string{"app": "nginx"}, Annotations: map[string]string{"slo": slo, "controller": controllerRefName}},
 		Spec:       v1.PodSpec{Containers:
 		[]v1.Container{{Name: controllerRefName,
 						Image: "nginx",
@@ -227,3 +227,14 @@ func getDeploymentSpec(controllerRefName string,
 	return deployment
 
 }
+
+/*
+func alreadyDeleted(controllerName string) bool{
+	_, err := clientset.AppsV1beta2().Deployments("default").Get(controllerName, metav1.GetOptions{})
+	if (err != nil){
+		return true
+	} else {
+		return false
+	}
+}
+*/
