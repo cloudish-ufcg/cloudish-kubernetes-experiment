@@ -24,12 +24,15 @@ sudo tar -xvf go1.9.4.linux-amd64.tar.gz
 sudo mv go /usr/local
 
 # Install gcc
-apt install gcc
+apt install gcc build-essential
+
 
 # Configuring go paths (puth this in .profile)
 export GOROOT=/usr/local/go
 export GOPATH=/usr/share/go/bin
 export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+
+export KUBECONFIG=$HOME/admin.conf
  
 # Install go packages
 go get -u github.com/cloudflare/cfssl/cmd/cfssl

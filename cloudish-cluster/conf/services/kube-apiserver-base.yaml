@@ -30,7 +30,7 @@ spec:
     - --proxy-client-key-file=/etc/kubernetes/pki/front-proxy-client.key
     - --admission-control=Initializers,NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,DefaultTolerationSeconds,NodeRestriction,ResourceQuota,Priority
     - --allow-privileged=true
-    - --advertise-address=10.11.4.122
+    - --advertise-address=HOST_IP
     - --proxy-client-cert-file=/etc/kubernetes/pki/front-proxy-client.crt
     - --insecure-port=0
     - --requestheader-extra-headers-prefix=X-Remote-Extra-
@@ -42,7 +42,7 @@ spec:
     livenessProbe:
       failureThreshold: 8
       httpGet:
-        host: 10.11.4.122
+        host: HOST_IP
         path: /healthz
         port: 6443
         scheme: HTTPS

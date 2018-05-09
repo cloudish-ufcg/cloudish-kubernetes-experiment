@@ -9,22 +9,8 @@
 echo ""
 echo ">>> Building infrastructure"
 echo ""
-#kubeadm reset
-#kubeadm init --kubernetes-version='v1.9.1'
+
 kubeadm reset
-systemctl stop kubelet
-systemctl stop docker
-rm -rf /var/lib/cni/
-rm -rf /var/lib/kubelet/*
-rm -rf /etc/cni/
-ifconfig cni0 down
-ifconfig flannel.1 down
-ifconfig docker0 down
-ip link delete cni0
-ip link delete flannel.1
-
-service docker restart
-
 kubeadm init --kubernetes-version='v1.9.1' --pod-network-cidr="10.244.0.0/16"
 
 cp /etc/kubernetes/admin.conf $HOME/
@@ -36,8 +22,12 @@ sleep 10
 echo ""
 echo ">>> Configuring preemption"
 echo ""
+
+HOST=`ifconfig ens3 | grep "inet " | sed 's/:/ /g' | awk '{print $3}'`
+cat conf/services/kube-apiserver-base.yaml | sed "s/HOST_IP/$HOST/g" > conf/services/kube-apiserver.yaml
 cp conf/services/kube-apiserver.yaml /etc/kubernetes/manifests/
 cp conf/services/kube-scheduler-base.yaml /etc/kubernetes/manifests/kube-scheduler.yaml
+
 cp conf/services/kube-controller-manager.yaml /etc/kubernetes/manifests/
 cp conf/services/10-kubeadm.conf /etc/systemd/system/kubelet.service.d/
 
@@ -73,10 +63,9 @@ kubectl create -f conf/priority_classes/high_priority_class.yaml
 echo ""
 echo ">>> Starting network services"
 echo ""
-#kubectl apply -f https://docs.projectcalico.org/v2.5/getting-started/kubernetes/installation/hosted/kubeadm/1.6/calico.yaml
+#kubectl apply -f https://docs.projectcalico.org/v2.6/getting-started/kubernetes/installation/hosted/rbac-kdd.yaml
+kubectl apply -f https://docs.projectcalico.org/v2.6/getting-started/kubernetes/installation/hosted/kubeadm/1.6/calico.yaml
 #kubectl apply -f https://docs.projectcalico.org/v3.1/getting-started/kubernetes/installation/hosted/kubeadm/1.7/calico.yaml
-kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
-#curl -sSL https://raw.githubusercontent.com/coreos/flannel/v0.9.1/Documentation/kube-flannel.yml | sed "s/amd64/arm64/g" | sed "s/vxlan/udp/g" | kubectl create -f -
 
 sleep 60
 
