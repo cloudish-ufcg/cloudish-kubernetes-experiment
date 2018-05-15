@@ -7,24 +7,24 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
+	"os"
 	//"os"
+	"crypto/rand"
 	"strconv"
 	"strings"
 	"sync"
 	"time"
-	"crypto/rand"
 
 	"github.com/golang/glog"
 	"github.com/prometheus/client_golang/api"
 	promApi "github.com/prometheus/client_golang/api/prometheus/v1"
 	"github.com/prometheus/common/model"
 
-
-	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
-        "k8s.io/client-go/tools/clientcmd"
-        metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-        "k8s.io/client-go/kubernetes"
 	appsv1beta2 "k8s.io/api/apps/v1beta2"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/kubernetes"
+	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
+	"k8s.io/client-go/tools/clientcmd"
 
 	"k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
@@ -32,21 +32,21 @@ import (
 	"os/exec"
 )
 
-func GetKubeClient(confPath string) (*kubernetes.Clientset) {
+func GetKubeClient(confPath string) *kubernetes.Clientset {
 
-        loadingRules := &clientcmd.ClientConfigLoadingRules{ExplicitPath: confPath}
-        loader := clientcmd.NewNonInteractiveDeferredLoadingClientConfig(loadingRules, &clientcmd.ConfigOverrides{})
+	loadingRules := &clientcmd.ClientConfigLoadingRules{ExplicitPath: confPath}
+	loader := clientcmd.NewNonInteractiveDeferredLoadingClientConfig(loadingRules, &clientcmd.ConfigOverrides{})
 
-        clientConfig, err := loader.ClientConfig()
-        if err != nil {
-                panic(err)
-        }
+	clientConfig, err := loader.ClientConfig()
+	if err != nil {
+		panic(err)
+	}
 
-        kubeclient, err := kubernetes.NewForConfig(clientConfig)
-        if err != nil {
-                        panic(err)
-        }
-        return kubeclient
+	kubeclient, err := kubernetes.NewForConfig(clientConfig)
+	if err != nil {
+		panic(err)
+	}
+	return kubeclient
 }
 
 func tokenGenerator() string {
@@ -55,37 +55,33 @@ func tokenGenerator() string {
 	return fmt.Sprintf("%x", b)
 }
 
-
 var (
 	wg sync.WaitGroup
 
-	/*cfg = api.Config{
-		Address:      os.Getenv("PROM_ADDRESS"),
-		RoundTripper: api.DefaultRoundTripper,
-	}*/
+	acc_runtime, act_runtime int
 
 	cfg = api.Config{
-                Address:      "http://10.11.4.122:30348",
-                RoundTripper: api.DefaultRoundTripper,
-        }
-
-
-	acc_runtime, act_runtime int
+		Address:      "http://10.11.4.122:30348",
+		RoundTripper: api.DefaultRoundTripper,
+	}
 
 	promClient, _ = api.NewClient(cfg)
 	newApi        = promApi.NewAPI(promClient)
-	layout        = "2006-01-02 15:04:05 +0000 UTC"
 
 	replicas = int32(1)
 
+	layout    = "2006-01-02 15:04:05 +0000 UTC"
 	clientset = GetKubeClient("/root/admin.conf")
 )
 
-
 func main() {
 
+	argsWithoutProg := os.Args[1:]
+
+	inputFile := string(argsWithoutProg[0])
+
 	var time_ref = 0
-	file, err := ioutil.ReadFile("input.example2")
+	file, err := ioutil.ReadFile(inputFile)
 
 	if err == nil {
 
@@ -121,7 +117,7 @@ func main() {
 					fmt.Println("Time: ", timestamp)
 					fmt.Println("Creating deployment ", controller_name)
 					clientset.AppsV1beta2().Deployments("default").Create(deployment)
-					
+
 					go manageControllerTermination(controller_name, expectedRuntime, &wg)
 
 				} else {
@@ -206,24 +202,26 @@ func getControllerRuntime(controllerRefName string, timestampRef time.Time) int 
 }
 
 func getDeploymentSpec(controllerRefName string,
-	cpuReq string, memReq string, slo string) (*appsv1beta2.Deployment){
+	cpuReq string, memReq string, slo string) *appsv1beta2.Deployment {
 	memReqFloat, _ := strconv.ParseFloat(memReq, 64)
-	memReqKi := memReqFloat * 1000000;
+	memReqKi := memReqFloat * 1000000
 	memReqStr := strconv.FormatFloat(memReqKi, 'f', -1, 64)
 	memRequest := memReqStr + "Ki"
 	fmt.Println(memRequest)
 	rl := v1.ResourceList{v1.ResourceName(v1.ResourceMemory): resource.MustParse(memRequest),
 		v1.ResourceName(v1.ResourceCPU): resource.MustParse(cpuReq)}
 
+	gracePeriod := int64(0)
 	pod := v1.PodTemplateSpec{
-		ObjectMeta: metav1.ObjectMeta{Labels: map[string]string{"app": "nginx"}, Annotations: map[string]string{"slo": slo, "controller": controllerRefName}},
-		Spec:       v1.PodSpec{Containers:
-		[]v1.Container{{Name: controllerRefName,
-						Image: "nginx",
-						Resources: v1.ResourceRequirements{
-							Limits: rl,
-							Requests: rl,
-			},}},
+		ObjectMeta: metav1.ObjectMeta{Labels: map[string]string{"app": "busybox"}, Annotations: map[string]string{"slo": slo, "controller": controllerRefName}},
+		Spec: v1.PodSpec{
+			TerminationGracePeriodSeconds: &gracePeriod,
+			Containers: []v1.Container{{Name: controllerRefName,
+				Image: "busybox",
+				Resources: v1.ResourceRequirements{
+					Limits:   rl,
+					Requests: rl,
+				}}},
 			PriorityClassName: "low-priority"},
 	}
 
@@ -232,18 +230,6 @@ func getDeploymentSpec(controllerRefName string,
 		Spec:       appsv1beta2.DeploymentSpec{Selector: &metav1.LabelSelector{MatchLabels: pod.Labels}, Replicas: &replicas, Template: pod},
 	}
 
-
 	return deployment
 
 }
-
-/*
-func alreadyDeleted(controllerName string) bool{
-	_, err := clientset.AppsV1beta2().Deployments("default").Get(controllerName, metav1.GetOptions{})
-	if (err != nil){
-		return true
-	} else {
-		return false
-	}
-}
-*/
