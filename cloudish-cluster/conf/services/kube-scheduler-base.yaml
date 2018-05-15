@@ -20,7 +20,7 @@ spec:
     - --v=5
     image: gcr.io/google_containers/kube-scheduler-amd64:v1.9.1
     #image: fabiomorais/kube-scheduler:v0.0.0
-    #image: cloudishjoao/kube-scheduler:v0.0.0
+    image: cloudishjoao/kube-scheduler:v0.2.7
     env:
     - name: PROM_ADDRESS
       value: "http://localhost:NEWPORT"
