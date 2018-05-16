@@ -18,12 +18,14 @@ spec:
     - --feature-gates=PodPriority=true
     - --kubeconfig=/etc/kubernetes/scheduler.conf
     - --v=5
-    image: gcr.io/google_containers/kube-scheduler-amd64:v1.9.1
-    #image: fabiomorais/kube-scheduler:v0.0.0
-    image: cloudishjoao/kube-scheduler:v0.2.7
+    #image: gcr.io/google_containers/kube-scheduler-amd64:v1.9.1
+    image: fabiomorais/kube-scheduler:v0.1.2
+    #image: cloudishjoao/kube-scheduler:v0.2.7
     env:
     - name: PROM_ADDRESS
-      value: "http://localhost:NEWPORT"
+      #value: "http://prometheusapi.prom.svc.cluster.local:9090"
+      #value: "http://localhost:NEWPORT"
+      value: "http://PROMADDR"
     - name: SAFETY_MARGIN
       value: "0.0"
     livenessProbe:

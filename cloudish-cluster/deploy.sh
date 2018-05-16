@@ -150,7 +150,7 @@ HOSTIP=`ifconfig ens3 | grep "inet addr" | sed 's/:/ /g' | awk '{print $3}'`
 PROMAPI_PORT=`kubectl get services --all-namespaces | grep prometheusapi | awk '{print $6}' | sed 's/:/ /g' | sed 's/\// /g' | awk '{print $2}'`
 GATEWAY_PORT=`kubectl get services --all-namespaces | grep pushgateway | awk '{print $6}' | sed 's/:/ /g' | sed 's/\// /g' | awk '{print $2}'`
 
-cat conf/kubewatch/kube-watch-base.yaml | sed "s/GATEWAY_ADDR/$HOSTIP:$GATEWAY_PORT/g" | sed "s/API_ADDR/$HOSTIP:$PROMAPI_PORT/g" > conf/kubewatch/kube-watch.yaml
+cat conf/kubewatch/kube-watch-base.yaml | sed "s/GATEWAY_ADDR/$GATEWAY:9091/g" | sed "s/API_ADDR/$PROMAPI:9090/g" > conf/kubewatch/kube-watch.yaml
 
 kubectl -n kubewatch create -f conf/kubewatch/kube-watch.yaml
 kubectl -n kubewatch create -f conf/kubewatch/kube-watch-role.yaml
@@ -158,7 +158,8 @@ kubectl -n kubewatch create -f conf/kubewatch/kube-watch-role.yaml
 echo ""
 echo ">>> Configuring prometheus for scheduler"
 echo ""
-cat conf/services/kube-scheduler-base.yaml | sed "s/NEWPORT/$PROMAPI_PORT/g" > conf/services/kube-scheduler.yaml
+#cat conf/services/kube-scheduler-base.yaml | sed "s/NEWPORT/$PROMAPI_PORT/g" > conf/services/kube-scheduler.yaml
+cat conf/services/kube-scheduler-base.yaml | sed "s/PROMADDR/$PROMAPI:9090/g" > conf/services/kube-scheduler.yaml
 cp conf/services/kube-scheduler.yaml /etc/kubernetes/manifests/
 
 sleep 10
@@ -171,4 +172,3 @@ systemctl daemon-reload
 
 sleep 10 
 kubectl taint node `hostname`  dedicated=special-user:NoSchedule
-

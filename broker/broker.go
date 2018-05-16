@@ -61,7 +61,8 @@ var (
 	acc_runtime, act_runtime int
 
 	cfg = api.Config{
-		Address:      "http://10.11.4.122:30348",
+		Address:      "http://10.105.161.60:9090",
+		//Address: "http://192.168.5.32:32016",
 		RoundTripper: api.DefaultRoundTripper,
 	}
 
@@ -213,11 +214,11 @@ func getDeploymentSpec(controllerRefName string,
 
 	gracePeriod := int64(0)
 	pod := v1.PodTemplateSpec{
-		ObjectMeta: metav1.ObjectMeta{Labels: map[string]string{"app": "busybox"}, Annotations: map[string]string{"slo": slo, "controller": controllerRefName}},
+		ObjectMeta: metav1.ObjectMeta{Labels: map[string]string{"app": "nginx"}, Annotations: map[string]string{"slo": slo, "controller": controllerRefName}},
 		Spec: v1.PodSpec{
 			TerminationGracePeriodSeconds: &gracePeriod,
 			Containers: []v1.Container{{Name: controllerRefName,
-				Image: "busybox",
+				Image: "nginx",
 				Resources: v1.ResourceRequirements{
 					Limits:   rl,
 					Requests: rl,
