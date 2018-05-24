@@ -78,6 +78,9 @@ var (
 
 	replicas = int32(1)
 
+	numberOfRetries = 5
+	defaultTimeToSleep = 5
+
 	clientset = GetKubeClient("/root/admin.conf")
 )
 
@@ -122,7 +125,7 @@ func main() {
 					fmt.Println("Creating deployment ", controller_name)
 					clientset.AppsV1beta2().Deployments("default").Create(deployment)
 					
-					go manageControllerTermination(controller_name, expectedRuntime, &wg)
+					go manageControllerTermination(controller_name, expectedRuntime, &wg, numberOfRetries)
 
 				} else {
 					wait_time := int(timestamp - time_ref)
@@ -132,7 +135,7 @@ func main() {
 					fmt.Println("Time: ", timestamp)
 					fmt.Println("Creating deployment ", controller_name)
 					clientset.AppsV1beta2().Deployments("default").Create(deployment)
-					go manageControllerTermination(controller_name, expectedRuntime, &wg)
+					go manageControllerTermination(controller_name, expectedRuntime, &wg, numberOfRetries)
 				}
 
 			}
@@ -144,11 +147,12 @@ func main() {
 	fmt.Println("Finished")
 }
 
-func manageControllerTermination(controllerName string, expectedRuntime int, wg *sync.WaitGroup) {
+func manageControllerTermination(controllerName string, expectedRuntime int, wg *sync.WaitGroup, numberOfRetries int) {
 	wg.Add(1)
 	var runtime = 0
+	var waitTime = expectedRuntime - runtime
 	for {
-		runtime = getControllerRuntime(controllerName, time.Now().UTC())
+
 		if runtime >= expectedRuntime {
 			fmt.Println("deleting", controllerName, runtime, expectedRuntime)
 			fmt.Println("Deployment achieved runtime. Deleting...", controllerName)
@@ -158,23 +162,37 @@ func manageControllerTermination(controllerName string, expectedRuntime int, wg 
 			wg.Done()
 			break
 		} else {
-			waitTime := expectedRuntime - runtime
 			time.Sleep(time.Duration(waitTime) * time.Second)
 			fmt.Println("running", controllerName, runtime, expectedRuntime)
 		}
+
+		runtime, result := getControllerRuntime(controllerName, time.Now().UTC(), numberOfRetries)
+
+		if (result == false){
+			waitTime = defaultTimeToSleep
+		} else {
+			waitTime = expectedRuntime - runtime
+		}
+
 	}
 }
 
-func getControllerRuntime(controllerRefName string, timestampRef time.Time) int {
+func getControllerRuntime(controllerRefName string, timestampRef time.Time, numberOfRetries int) (int, bool) {
 
 	acc_runtime = 0
 	act_runtime = 0
-	query := `running_time{controller="` + controllerRefName + `"}`
-	result, _ := newApi.Query(context.Background(), query, timestampRef)
-	vectorVal := result.(model.Vector)
+	var retries = 0
+	var vectorVal model.Vector
+
+	for len(vectorVal) == 0 && retries <= numberOfRetries {
+		retries = retries + 1
+		query := `running_time{controller="` + controllerRefName + `"}`
+		result, _ := newApi.Query(context.Background(), query, timestampRef)
+		vectorVal = result.(model.Vector)
+	}
 
 	if len(vectorVal) == 0 {
-		return 0
+		return 0, false
 	}
 
 	for _, elem := range vectorVal {
@@ -202,7 +220,7 @@ func getControllerRuntime(controllerRefName string, timestampRef time.Time) int 
 
 	total_running_time := int(acc_runtime + act_runtime)
 
-	return total_running_time
+	return total_running_time, true
 }
 
 func getDeploymentSpec(controllerRefName string,
