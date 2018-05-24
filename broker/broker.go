@@ -30,6 +30,7 @@ import (
 	"k8s.io/apimachinery/pkg/api/resource"
 
 	"os/exec"
+	"bufio"
 )
 
 func GetKubeClient(confPath string) *kubernetes.Clientset {
@@ -55,13 +56,31 @@ func tokenGenerator() string {
 	return fmt.Sprintf("%x", b)
 }
 
+func check(e error) {
+    if e != nil {
+        panic(e)
+    }
+}
+
+func dump(info, file string) {
+
+        f, err := os.OpenFile(file, os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0644)
+        check(err)
+        defer f.Close()
+
+        w := bufio.NewWriter(f)
+
+        w.WriteString(info)
+        w.Flush()
+}
+
 var (
 	wg sync.WaitGroup
 
 	acc_runtime, act_runtime int
 
 	cfg = api.Config{
-		Address:      "http://10.105.161.60:9090",
+		Address:      "http://10.105.89.52:9090",
 		//Address: "http://192.168.5.32:32016",
 		RoundTripper: api.DefaultRoundTripper,
 	}
@@ -76,6 +95,8 @@ var (
 )
 
 func main() {
+
+	start := time.Now()
 
 	argsWithoutProg := os.Args[1:]
 
@@ -105,12 +126,17 @@ func main() {
 				slo := string(record[11])
 				cpuReq := string(record[8])
 				memReq := string(record[9])
+				task_id := string(record[1])
+				class := string(record[10])
 
 				//controller_name := string(record[1]) + "-" + string(record[2])
-				controller_name := tokenGenerator()
-				expectedRuntime, _ := strconv.Atoi(string(record[6]))
+				controller_name := class + "-" + task_id + "-" + tokenGenerator()
+				//expectedRuntime, _ := strconv.Atoi(string(record[6]))
+
+				expectedRuntime := 150
 
 				deployment := getDeploymentSpec(controller_name, cpuReq, memReq, slo)
+
 				fmt.Println("Reading new task...")
 				fmt.Println("Deployment %v, cpu: %v, mem: %v", "slo: %v", controller_name, cpuReq, memReq, slo)
 
@@ -138,7 +164,9 @@ func main() {
 
 	// TODO wait the experiment timeout and terminate all controllers
 	wg.Wait()
-	fmt.Println("Finished")
+
+	elapsed := time.Since(start)
+	fmt.Println("Finished - runtime: ", elapsed)
 }
 
 func manageControllerTermination(controllerName string, expectedRuntime int, wg *sync.WaitGroup) {
@@ -148,6 +176,8 @@ func manageControllerTermination(controllerName string, expectedRuntime int, wg 
 		runtime = getControllerRuntime(controllerName, time.Now().UTC())
 		if runtime >= expectedRuntime {
 			fmt.Println("deleting", controllerName, runtime, expectedRuntime)
+			out := fmt.Sprintf("%s %d %d\n", controllerName, runtime, expectedRuntime)
+			dump(out, "/root/broker.log")
 			fmt.Println("Deployment achieved runtime. Deleting...", controllerName)
 			//clientset.AppsV1beta2().Deployments("default").Delete(controllerName, &metav1.DeleteOptions{})
 			cmd := exec.Command("/usr/bin/kubectl", "delete", "deploy", controllerName)
@@ -158,6 +188,8 @@ func manageControllerTermination(controllerName string, expectedRuntime int, wg 
 			waitTime := expectedRuntime - runtime
 			time.Sleep(time.Duration(waitTime) * time.Second)
 			fmt.Println("running", controllerName, runtime, expectedRuntime)
+			out := fmt.Sprintf("%s %d %d %d\n", controllerName, runtime, expectedRuntime, waitTime)
+                        dump(out, "/root/broker.log")
 		}
 	}
 }
@@ -171,6 +203,8 @@ func getControllerRuntime(controllerRefName string, timestampRef time.Time) int 
 	vectorVal := result.(model.Vector)
 
 	if len(vectorVal) == 0 {
+		out := fmt.Sprintf("Metrica vazia %s\n", controllerRefName)
+                dump(out, "/root/broker.log")
 		return 0
 	}
 
