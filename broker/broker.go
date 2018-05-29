@@ -8,8 +8,6 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
-	//"os"
-	"crypto/rand"
 	"strconv"
 	"strings"
 	"sync"
@@ -80,16 +78,17 @@ var (
 	acc_runtime, act_runtime int
 
 	cfg = api.Config{
-		Address:      "http://10.105.89.52:9090",
-		//Address: "http://192.168.5.32:32016",
-		RoundTripper: api.DefaultRoundTripper,
-	}
+    Address:      "http://10.108.236.26:9090",
+    RoundTripper: api.DefaultRoundTripper,
+  }
 
 	promClient, _ = api.NewClient(cfg)
 	newApi        = promApi.NewAPI(promClient)
 
 	replicas = int32(1)
 
+	numberOfRetries = 0
+	defaultTimeToSleep = 5
 	layout    = "2006-01-02 15:04:05 +0000 UTC"
 	clientset = GetKubeClient("/root/admin.conf")
 )
@@ -97,7 +96,6 @@ var (
 func main() {
 
 	start := time.Now()
-
 	argsWithoutProg := os.Args[1:]
 
 	inputFile := string(argsWithoutProg[0])
@@ -111,6 +109,8 @@ func main() {
 
 		for {
 
+			//time.Sleep(time.Duration(0.5) * time.Second)
+			time.Sleep(time.Duration(500) * time.Millisecond)
 			record, err := r.Read()
 
 			if err == io.EOF {
@@ -134,6 +134,7 @@ func main() {
 				//expectedRuntime, _ := strconv.Atoi(string(record[6]))
 
 				expectedRuntime := 150
+	      dump(controller_name + "\n", "controllers.csv")
 
 				deployment := getDeploymentSpec(controller_name, cpuReq, memReq, slo)
 
@@ -144,8 +145,8 @@ func main() {
 					fmt.Println("Time: ", timestamp)
 					fmt.Println("Creating deployment ", controller_name)
 					clientset.AppsV1beta2().Deployments("default").Create(deployment)
-
-					go manageControllerTermination(controller_name, expectedRuntime, &wg)
+					wg.Add(1)
+					go manageControllerTermination(controller_name, expectedRuntime, &wg, numberOfRetries)
 
 				} else {
 					wait_time := int(timestamp - time_ref)
@@ -155,7 +156,8 @@ func main() {
 					fmt.Println("Time: ", timestamp)
 					fmt.Println("Creating deployment ", controller_name)
 					clientset.AppsV1beta2().Deployments("default").Create(deployment)
-					go manageControllerTermination(controller_name, expectedRuntime, &wg)
+					wg.Add(1)
+					go manageControllerTermination(controller_name, expectedRuntime, &wg, numberOfRetries)
 				}
 
 			}
@@ -169,43 +171,68 @@ func main() {
 	fmt.Println("Finished - runtime: ", elapsed)
 }
 
-func manageControllerTermination(controllerName string, expectedRuntime int, wg *sync.WaitGroup) {
-	wg.Add(1)
+func manageControllerTermination(controllerName string, expectedRuntime int, wg *sync.WaitGroup, numberOfRetries int) {
+//	wg.Add(1)
 	var runtime = 0
+	var waitTime = expectedRuntime - runtime
 	for {
-		runtime = getControllerRuntime(controllerName, time.Now().UTC())
+
 		if runtime >= expectedRuntime {
 			fmt.Println("deleting", controllerName, runtime, expectedRuntime)
 			out := fmt.Sprintf("%s %d %d\n", controllerName, runtime, expectedRuntime)
 			dump(out, "/root/broker.log")
 			fmt.Println("Deployment achieved runtime. Deleting...", controllerName)
+
+			out := fmt.Sprintf("%s Deploy achieved runtime %d. Deleting...\n", controllerName, runtime)
+
+			dump(out, "/root/broker.log")
+
 			//clientset.AppsV1beta2().Deployments("default").Delete(controllerName, &metav1.DeleteOptions{})
 			cmd := exec.Command("/usr/bin/kubectl", "delete", "deploy", controllerName)
 			cmd.Run()
 			wg.Done()
 			break
 		} else {
-			waitTime := expectedRuntime - runtime
 			time.Sleep(time.Duration(waitTime) * time.Second)
 			fmt.Println("running", controllerName, runtime, expectedRuntime)
 			out := fmt.Sprintf("%s %d %d %d\n", controllerName, runtime, expectedRuntime, waitTime)
                         dump(out, "/root/broker.log")
 		}
+
+		tmp_runtime, result := getControllerRuntime(controllerName, time.Now().UTC(), numberOfRetries)
+
+		if (result == false){
+			fmt.Println("Metric not found, waiting default time", controllerName)
+			waitTime = defaultTimeToSleep
+			out := fmt.Sprintf("%s Metric not found, waiting default time %d\n", controllerName, waitTime)
+                        dump(out, "/root/broker.log")
+		} else {
+			runtime = tmp_runtime
+			waitTime = expectedRuntime - runtime
+			fmt.Println("Metric found, sleeping...", controllerName, waitTime)
+			out := fmt.Sprintf("%s %s Metric found, running time: %d sleep time %d\n", time.Now().UTC(), controllerName, runtime, waitTime)
+			dump(out, "/root/broker.log")
+		}
+
 	}
 }
 
-func getControllerRuntime(controllerRefName string, timestampRef time.Time) int {
+func getControllerRuntime(controllerRefName string, timestampRef time.Time, numberOfRetries int) (int, bool) {
 
-	acc_runtime = 0
-	act_runtime = 0
-	query := `running_time{controller="` + controllerRefName + `"}`
-	result, _ := newApi.Query(context.Background(), query, timestampRef)
-	vectorVal := result.(model.Vector)
+	var acc_runtime = 0
+	var act_runtime = 0
+	var retries = 0
+	var vectorVal model.Vector
+
+	for len(vectorVal) == 0 && retries <= numberOfRetries {
+		retries = retries + 1
+		query := `running_time{controller="` + controllerRefName + `"}`
+		result, _ := newApi.Query(context.Background(), query, timestampRef)
+		vectorVal = result.(model.Vector)
+	}
 
 	if len(vectorVal) == 0 {
-		out := fmt.Sprintf("Metrica vazia %s\n", controllerRefName)
-                dump(out, "/root/broker.log")
-		return 0
+		return 0, false
 	}
 
 	for _, elem := range vectorVal {
@@ -233,7 +260,7 @@ func getControllerRuntime(controllerRefName string, timestampRef time.Time) int 
 
 	total_running_time := int(acc_runtime + act_runtime)
 
-	return total_running_time
+	return total_running_time, true
 }
 
 func getDeploymentSpec(controllerRefName string,

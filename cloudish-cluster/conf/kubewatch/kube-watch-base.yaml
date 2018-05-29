@@ -36,7 +36,7 @@ spec:
         - --watch-kind
         - Pod
         # And all flags passed to `kube-watch run` command
-        image: cloudishjoao/kube-watch:v0.0.56
-        #image: fabiomorais/kube-watch:v0.0.7
+        image: cloudishjoao/kube-watch:v0.0.72
+        #image: fabiomorais/kube-watch:v0.0.2
         imagePullPolicy: Always
         name: kube-watch

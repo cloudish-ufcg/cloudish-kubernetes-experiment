@@ -44,6 +44,8 @@ spec:
         name: prometheus
         args:
         # point prometheus at the configuration that you mount in below
+        - --query.max-concurrency=200
+        - --web.max-connections=2048
         - --config.file=/etc/prometheus/prometheus.yml
         ports:
         # this port exposes the dashboard and the HTTP API
