@@ -20,14 +20,16 @@ spec:
         - --in-cluster
         - --url
         - https://hooks.slack.com/services/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
-        - --slack-channel-url
-        - https://hooks.slack.com/services/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
+        #- --slack-channel-url
+        #- https://hooks.slack.com/services/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
         - --pushgateway-address
+        #- pushgateway.prom.svc.cluster.local:9091
         - GATEWAY_ADDR
         - --api-address
         - http://API_ADDR
+        #- http://prometheusapi.prom.svc.cluster.local:9090
         - --waiting-tolerance
-        - "0.0"
+        - "15.0"
         # don't forget http
         #- --api-address
         #- http://10.11.4.122:30094
