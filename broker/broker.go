@@ -84,7 +84,7 @@ var (
 	}*/
 
 	cfg = api.Config{
-                Address:      "http://10.105.89.52:9090",
+                Address:      "http://10.108.236.26:9090",
                 RoundTripper: api.DefaultRoundTripper,
         }
 
@@ -94,7 +94,7 @@ var (
 
 	replicas = int32(1)
 
-	numberOfRetries = 5
+	numberOfRetries = 0
 	defaultTimeToSleep = 5
 
 	clientset = GetKubeClient("/root/admin.conf")
@@ -116,6 +116,8 @@ func main() {
 
 		for {
 
+			//time.Sleep(time.Duration(0.5) * time.Second)
+			time.Sleep(time.Duration(500) * time.Millisecond)
 			record, err := r.Read()
 
 			if err == io.EOF {
@@ -138,6 +140,9 @@ func main() {
 				controller_name := class + "-" + task_id + "-" + tokenGenerator()
 				//expectedRuntime, _ := strconv.Atoi(string(record[6]))
 				expectedRuntime := 150
+
+	                        dump(controller_name + "\n", "controllers.csv")
+
 				deployment := getDeploymentSpec(controller_name, cpuReq, memReq, slo)
 				fmt.Println("Reading new task...")
 				fmt.Println("Deployment %v, cpu: %v, mem: %v", "slo: %v", controller_name, cpuReq, memReq, slo)
@@ -146,7 +151,7 @@ func main() {
 					fmt.Println("Time: ", timestamp)
 					fmt.Println("Creating deployment ", controller_name)
 					clientset.AppsV1beta2().Deployments("default").Create(deployment)
-					
+					wg.Add(1)
 					go manageControllerTermination(controller_name, expectedRuntime, &wg, numberOfRetries)
 
 				} else {
@@ -157,6 +162,7 @@ func main() {
 					fmt.Println("Time: ", timestamp)
 					fmt.Println("Creating deployment ", controller_name)
 					clientset.AppsV1beta2().Deployments("default").Create(deployment)
+					wg.Add(1)
 					go manageControllerTermination(controller_name, expectedRuntime, &wg, numberOfRetries)
 				}
 
@@ -170,7 +176,7 @@ func main() {
 }
 
 func manageControllerTermination(controllerName string, expectedRuntime int, wg *sync.WaitGroup, numberOfRetries int) {
-	wg.Add(1)
+//	wg.Add(1)
 	var runtime = 0
 	var waitTime = expectedRuntime - runtime
 	for {
