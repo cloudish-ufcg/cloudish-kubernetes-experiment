@@ -93,7 +93,7 @@ func main() {
 		for {
 
 			//time.Sleep(time.Duration(0.5) * time.Second)
-			time.Sleep(time.Duration(500) * time.Millisecond)
+			//time.Sleep(time.Duration(500) * time.Millisecond)
 			record, err := r.Read()
 
 			if err == io.EOF {
@@ -155,6 +155,7 @@ func manageControllerTermination(controllerName string, expectedRuntime int, wg 
 
 	time.Sleep(time.Duration(expectedRuntime) * time.Second)
 
+	fmt.Println("Killing deploy %s", controllerName)
 	out := fmt.Sprintf("Deploy %s will be deleted.\n", controllerName)
 	dump(out, "/root/broker.log")
 
