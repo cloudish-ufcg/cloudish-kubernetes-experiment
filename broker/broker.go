@@ -12,6 +12,7 @@ import (
 	"strings"
 	"sync"
 	"time"
+	"crypto/rand"
 
 	"github.com/golang/glog"
 	"github.com/prometheus/client_golang/api"
@@ -183,7 +184,7 @@ func manageControllerTermination(controllerName string, expectedRuntime int, wg 
 			dump(out, "/root/broker.log")
 			fmt.Println("Deployment achieved runtime. Deleting...", controllerName)
 
-			out := fmt.Sprintf("%s Deploy achieved runtime %d. Deleting...\n", controllerName, runtime)
+			out = fmt.Sprintf("%s Deploy achieved runtime %d. Deleting...\n", controllerName, runtime)
 
 			dump(out, "/root/broker.log")
 
