@@ -51,8 +51,15 @@ kubectl taint nodes --all node-role.kubernetes.io/master-
 
 # creating priority classes 
 kubectl create -f conf/priority_classes/services_priority_class.yaml
-kubectl create -f conf/priority_classes/low_priority_class.yaml
-kubectl create -f conf/priority_classes/high_priority_class.yaml
+#kubectl create -f conf/priority_classes/low_priority_class.yaml
+#kubectl create -f conf/priority_classes/high_priority_class.yaml
+
+kubectl create -f conf/priority_classes/free_priority_class.yaml
+kubectl create -f conf/priority_classes/batch_priority_class.yaml
+kubectl create -f conf/priority_classes/prod_priority_class.yaml
+
+
+
 
 #echo ""
 #echo ">>> Taint master to be schedulable"
