@@ -85,7 +85,8 @@ func main() {
 
 	fmt.Println("ARG 1: ", argsWithoutProg[1])
 	if len(argsWithoutProg) > 1 {
-		experimentDuration := time.Duration(strconv.Atoi(string(argsWithoutProg[1]))) * time.Second
+		experimentDurationInt, _ := strconv.Atoi(string(argsWithoutProg[1])
+		experimentDuration := time.Duration(experimentDurationInt) * time.Second
 	}
 
 	var timeRef = 0
