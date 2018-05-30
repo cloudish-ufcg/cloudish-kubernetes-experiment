@@ -68,7 +68,7 @@ func dump(info, file string) {
 }
 
 var (
-	wg sync.WaitGroup
+	//wg sync.WaitGroup
 
 	replicas = int32(1)
 
@@ -82,6 +82,13 @@ func main() {
 	argsWithoutProg := os.Args[1:]
 
 	inputFile := string(argsWithoutProg[0])
+	var experimentDurationInSeconds
+
+	if (len(argsWithoutProg) > 1) {
+		experimentDuration = time.Duration(argsWithoutProg[1]) * time.Second
+	} else {
+		experimentDuration = time.Duration(150) * time.Second
+	}
 
 	var timeRef = 0
 	file, err := ioutil.ReadFile(inputFile)
@@ -114,7 +121,6 @@ func main() {
 
 				controlleName := class + "-" + taskID + "-" + tokenGenerator()
 
-				expectedRuntime := 150
 				dump(controlleName+"\n", "controllers.csv")
 
 				deployment := getDeploymentSpec(controlleName, cpuReq, memReq, slo, class)
@@ -126,8 +132,8 @@ func main() {
 					fmt.Println("Time: ", timestamp)
 					fmt.Println("Creating deployment ", controlleName)
 					clientset.AppsV1beta2().Deployments("default").Create(deployment)
-					wg.Add(1)
-					go manageControllerTermination(controlleName, expectedRuntime-timeRef, &wg)
+					//wg.Add(1)
+					//go manageControllerTermination(controlleName, expectedRuntime-timeRef, &wg)
 
 				} else {
 					waittime := int(timestamp - timeRef)
@@ -137,33 +143,35 @@ func main() {
 					fmt.Println("Time: ", timestamp)
 					fmt.Println("Creating deployment ", controlleName)
 					clientset.AppsV1beta2().Deployments("default").Create(deployment)
-					wg.Add(1)
-					go manageControllerTermination(controlleName, expectedRuntime-timeRef, &wg)
+					//wg.Add(1)
+					//go manageControllerTermination(controlleName, expectedRuntime-timeRef, &wg)
 				}
 
 			}
 		}
 	}
 
-	wg.Wait()
+	manageControllerTermination(controlleName, expectedRuntime-timeRef, &wg)
+
+	//wg.Wait()
 
 	elapsed := time.Since(start)
 	fmt.Println("Finished - runtime: ", elapsed)
 }
 
-func manageControllerTermination(controllerName string, expectedRuntime int, wg *sync.WaitGroup) {
+func manageControllerTermination(experimentDuration Duration, wg *sync.WaitGroup) {
 
-	time.Sleep(time.Duration(expectedRuntime) * time.Second)
+	time.Sleep(experimentDuration)
 
-	fmt.Println("Killing deploy %s", controllerName)
-	out := fmt.Sprintf("Deploy %s will be deleted.\n", controllerName)
+	fmt.Println("Killing all deployments after ", experimentDuration, seconds)
+	out := fmt.Sprintf("Killing all deployments after %s", experimentDuration)
 	dump(out, "/root/broker.log")
 
 	//clientset.AppsV1beta2().Deployments("default").Delete(controllerName, &metav1.DeleteOptions{})
-	cmd := exec.Command("/usr/bin/kubectl", "delete", "deploy", controllerName)
+	cmd := exec.Command("/usr/bin/kubectl", "delete", "deploy", "--all")
 	cmd.Run()
 
-	wg.Done()
+	//wg.Done()
 }
 
 func getDeploymentSpec(controllerRefName string,
