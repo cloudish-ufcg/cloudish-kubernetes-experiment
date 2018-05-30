@@ -10,7 +10,6 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	"sync"
 	"time"
 
 	appsv1beta2 "k8s.io/api/apps/v1beta2"
@@ -85,7 +84,7 @@ func main() {
 	var experimentDuration = time.Duration(150) * time.Second
 
 	if len(argsWithoutProg) > 1 {
-		experimentDuration := time.Duration(argsWithoutProg[1]) * time.Second
+		experimentDuration := time.Duration(int(argsWithoutProg[1])) * time.Second
 	}
 
 	var timeRef = 0
@@ -149,7 +148,7 @@ func main() {
 		}
 	}
 
-	manageControllerTermination(controlleName, expectedRuntime-timeRef, &wg)
+	manageControllerTermination(expectedRuntime - timeRef)
 
 	//wg.Wait()
 
@@ -157,11 +156,11 @@ func main() {
 	fmt.Println("Finished - runtime: ", elapsed)
 }
 
-func manageControllerTermination(experimentDuration Duration, wg *sync.WaitGroup) {
+func manageControllerTermination(experimentDuration time.Duration) {
 
 	time.Sleep(experimentDuration)
 
-	fmt.Println("Killing all deployments after ", experimentDuration, seconds)
+	fmt.Println("Killing all deployments after ", experimentDuration, "seconds")
 	out := fmt.Sprintf("Killing all deployments after %s", experimentDuration)
 	dump(out, "/root/broker.log")
 
