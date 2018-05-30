@@ -82,12 +82,10 @@ func main() {
 	argsWithoutProg := os.Args[1:]
 
 	inputFile := string(argsWithoutProg[0])
-	var experimentDurationInSeconds
+	var experimentDuration = time.Duration(150) * time.Second
 
-	if (len(argsWithoutProg) > 1) {
-		experimentDuration = time.Duration(argsWithoutProg[1]) * time.Second
-	} else {
-		experimentDuration = time.Duration(150) * time.Second
+	if len(argsWithoutProg) > 1 {
+		experimentDuration := time.Duration(argsWithoutProg[1]) * time.Second
 	}
 
 	var timeRef = 0
