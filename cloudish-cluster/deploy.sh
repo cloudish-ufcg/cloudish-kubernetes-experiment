@@ -11,7 +11,7 @@ echo ">>> Building infrastructure"
 echo ""
 
 kubeadm reset
-kubeadm init --kubernetes-version='v1.9.1' --pod-network-cidr="10.244.0.0/16"
+kubeadm init --kubernetes-version='v1.9.1' --pod-network-cidr=192.168.0.0/16
 
 cp /etc/kubernetes/admin.conf $HOME/
 chown $(id -u):$(id -g) $HOME/admin.conf
@@ -137,13 +137,13 @@ kubectl get services --all-namespaces
 sleep 10
 
 echo ""
-PROMAPI=`kubectl get services --all-namespaces | grep prometheusapi | awk '{print $4}'`
+PROMAPI=`kubectl get services --all-namespaces | grep prometheusapi | awk '{print $3}'`
 echo ">>> Curl prometheus API on $PROMAPI:9090"
 echo ""
 curl $PROMAPI:9090/api/v1/label/__name__/values
 
 echo ""
-GATEWAY=`kubectl get services --all-namespaces | grep pushgateway | awk '{print $4}'`
+GATEWAY=`kubectl get services --all-namespaces | grep pushgateway | awk '{print $3}'`
 echo ">>> Curl pushgateway API on $GATEWAY:9090"
 echo ""
 curl $GATEWAY:9091/metrics
@@ -154,8 +154,8 @@ echo ""
 kubectl create namespace kubewatch
 
 HOSTIP=`ifconfig ens3 | grep "inet addr" | sed 's/:/ /g' | awk '{print $3}'` 
-PROMAPI_PORT=`kubectl get services --all-namespaces | grep prometheusapi | awk '{print $6}' | sed 's/:/ /g' | sed 's/\// /g' | awk '{print $2}'`
-GATEWAY_PORT=`kubectl get services --all-namespaces | grep pushgateway | awk '{print $6}' | sed 's/:/ /g' | sed 's/\// /g' | awk '{print $2}'`
+PROMAPI_PORT=`kubectl get services --all-namespaces | grep prometheusapi | awk '{print $5}' | sed 's/:/ /g' | sed 's/\// /g' | awk '{print $2}'`
+GATEWAY_PORT=`kubectl get services --all-namespaces | grep pushgateway | awk '{print $5}' | sed 's/:/ /g' | sed 's/\// /g' | awk '{print $2}'`
 
 cat conf/kubewatch/kube-watch-base.yaml | sed "s/GATEWAY_ADDR/$GATEWAY:9091/g" | sed "s/API_ADDR/$PROMAPI:9090/g" > conf/kubewatch/kube-watch.yaml
 
