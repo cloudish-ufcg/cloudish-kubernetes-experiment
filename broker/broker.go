@@ -84,7 +84,7 @@ func main() {
 	var experimentDuration = time.Duration(150) * time.Second
 
 	if len(argsWithoutProg) > 1 {
-		experimentDuration := time.Duration(int(argsWithoutProg[1])) * time.Second
+		experimentDuration := time.Duration(strconv.Atoi(argsWithoutProg[1])) * time.Second
 	}
 
 	var timeRef = 0
@@ -148,7 +148,7 @@ func main() {
 		}
 	}
 
-	manageControllerTermination(expectedRuntime - timeRef)
+	manageControllerTermination(experimentDuration)
 
 	//wg.Wait()
 
