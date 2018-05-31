@@ -93,7 +93,7 @@ func main() {
 		for {
 
 			//time.Sleep(time.Duration(0.5) * time.Second)
-			//time.Sleep(time.Duration(500) * time.Millisecond)
+			time.Sleep(time.Duration(500) * time.Millisecond)
 			record, err := r.Read()
 
 			if err == io.EOF {
@@ -125,9 +125,9 @@ func main() {
 				if timestamp == timeRef {
 					fmt.Println("Time: ", timestamp)
 					fmt.Println("Creating deployment ", controlleName)
-					clientset.AppsV1beta2().Deployments("default").Create(deployment)
+					//clientset.AppsV1beta2().Deployments("default").Create(deployment)
 					wg.Add(1)
-					go manageControllerTermination(controlleName, expectedRuntime-timeRef, &wg)
+					go CreateAndManageControllerTermination(controlleName, deployment, expectedRuntime-timeRef, &wg)
 
 				} else {
 					waittime := int(timestamp - timeRef)
@@ -136,9 +136,9 @@ func main() {
 					time.Sleep(time.Duration(waittime) * time.Second)
 					fmt.Println("Time: ", timestamp)
 					fmt.Println("Creating deployment ", controlleName)
-					clientset.AppsV1beta2().Deployments("default").Create(deployment)
+					//clientset.AppsV1beta2().Deployments("default").Create(deployment)
 					wg.Add(1)
-					go manageControllerTermination(controlleName, expectedRuntime-timeRef, &wg)
+					go CreateAndManageControllerTermination(controlleName, deployment, expectedRuntime-timeRef, &wg)
 				}
 
 			}
@@ -151,7 +151,9 @@ func main() {
 	fmt.Println("Finished - runtime: ", elapsed)
 }
 
-func manageControllerTermination(controllerName string, expectedRuntime int, wg *sync.WaitGroup) {
+func CreateAndManageControllerTermination(controllerName string, deployment *appsv1beta2.Deployment, expectedRuntime int, wg *sync.WaitGroup) {
+
+        clientset.AppsV1beta2().Deployments("default").Create(deployment)
 
 	time.Sleep(time.Duration(expectedRuntime) * time.Second)
 

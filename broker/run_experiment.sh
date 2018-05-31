@@ -7,10 +7,17 @@ mkdir data/$OUTPUT_BASE
 
 go run broker.go $1
 
-# copy files
-
-
 KWPOD=`kubectl get pods -n kubewatch | grep -v NAME | awk '{print $1}'`
+
+sleep 10
+
+COUNTER=`kubectl get deploy | grep -v resources | wc -l`
+while [  $COUNTER -ne 0 ]; do
+	sleep 1
+	COUNTER=`kubectl get deploy | grep -v resources | wc -l`
+done
+
+sleep 10
 
 kubectl cp kubewatch/$KWPOD:/home/allocation.dat data/$OUTPUT_BASE/
 kubectl cp kubewatch/$KWPOD:/home/termination.dat data/$OUTPUT_BASE/
