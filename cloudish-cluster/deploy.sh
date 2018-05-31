@@ -137,13 +137,13 @@ kubectl get services --all-namespaces
 sleep 10
 
 echo ""
-PROMAPI=`kubectl get services --all-namespaces | grep prometheusapi | awk '{print $3}'`
+PROMAPI=`kubectl get services --all-namespaces | grep prometheusapi | awk '{print $4}'`
 echo ">>> Curl prometheus API on $PROMAPI:9090"
 echo ""
 curl $PROMAPI:9090/api/v1/label/__name__/values
 
 echo ""
-GATEWAY=`kubectl get services --all-namespaces | grep pushgateway | awk '{print $3}'`
+GATEWAY=`kubectl get services --all-namespaces | grep pushgateway | awk '{print $4}'`
 echo ">>> Curl pushgateway API on $GATEWAY:9090"
 echo ""
 curl $GATEWAY:9091/metrics
