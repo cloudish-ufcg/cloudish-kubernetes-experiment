@@ -2,7 +2,7 @@
 INPUT_FILE=$1
 DURATION=$2
 
-INPUT_BASE=`echo $INPUT_FILE | sed 's/.csv//g'`
+INPUT_BASE=`basename -- $INPUT_FILE | sed 's/.csv//g'`
 OUTPUT_BASE=`date +%Y%m%d"_"%H%M%S`"_"$INPUT_BASE
 
 mkdir data/$OUTPUT_BASE
