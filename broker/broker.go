@@ -82,6 +82,13 @@ func main() {
 	argsWithoutProg := os.Args[1:]
 
 	inputFile := string(argsWithoutProg[0])
+	var experimentDuration = 150 //time.Duration(150) * time.Second
+
+	fmt.Println("ARG 1: ", argsWithoutProg[1])
+	if len(argsWithoutProg) > 1 {
+		experimentDurationInt, _ := strconv.Atoi(argsWithoutProg[1])
+		experimentDuration = experimentDurationInt //time.Duration(experimentDurationInt) * time.Second
+	}
 
 	var timeRef = 0
 	file, err := ioutil.ReadFile(inputFile)
@@ -92,8 +99,8 @@ func main() {
 
 		for {
 
-			//time.Sleep(time.Duration(0.5) * time.Second)
-			time.Sleep(time.Duration(500) * time.Millisecond)
+			time.Sleep(time.Duration(1) * time.Second)
+			//time.Sleep(time.Duration(500) * time.Millisecond)
 			record, err := r.Read()
 
 			if err == io.EOF {
@@ -114,7 +121,6 @@ func main() {
 
 				controlleName := class + "-" + taskID + "-" + tokenGenerator()
 
-				expectedRuntime := 150
 				dump(controlleName+"\n", "controllers.csv")
 
 				deployment := getDeploymentSpec(controlleName, cpuReq, memReq, slo, class)
@@ -125,9 +131,9 @@ func main() {
 				if timestamp == timeRef {
 					fmt.Println("Time: ", timestamp)
 					fmt.Println("Creating deployment ", controlleName)
-					clientset.AppsV1beta2().Deployments("default").Create(deployment)
+					//clientset.AppsV1beta2().Deployments("default").Create(deployment)
 					wg.Add(1)
-					go manageControllerTermination(controlleName, expectedRuntime-timeRef, &wg)
+					go CreateAndManageControllerTermination(controlleName, deployment, experimentDuration-timeRef, &wg)
 
 				} else {
 					waittime := int(timestamp - timeRef)
@@ -136,9 +142,9 @@ func main() {
 					time.Sleep(time.Duration(waittime) * time.Second)
 					fmt.Println("Time: ", timestamp)
 					fmt.Println("Creating deployment ", controlleName)
-					clientset.AppsV1beta2().Deployments("default").Create(deployment)
+					//clientset.AppsV1beta2().Deployments("default").Create(deployment)
 					wg.Add(1)
-					go manageControllerTermination(controlleName, expectedRuntime-timeRef, &wg)
+					go CreateAndManageControllerTermination(controlleName, deployment, experimentDuration-timeRef, &wg)
 				}
 
 			}
@@ -151,11 +157,14 @@ func main() {
 	fmt.Println("Finished - runtime: ", elapsed)
 }
 
-func manageControllerTermination(controllerName string, expectedRuntime int, wg *sync.WaitGroup) {
+func CreateAndManageControllerTermination(controllerName string, deployment *appsv1beta2.Deployment, expectedRuntime int, wg *sync.WaitGroup) {
+
+	clientset.AppsV1beta2().Deployments("default").Create(deployment)
 
 	time.Sleep(time.Duration(expectedRuntime) * time.Second)
 
-	out := fmt.Sprintf("Deploy %s will be deleted.\n", controllerName)
+	fmt.Println("Killing all deployments after ", expectedRuntime, "seconds")
+	out := fmt.Sprintf("Killing all deployments after %s", expectedRuntime)
 	dump(out, "/root/broker.log")
 
 	//clientset.AppsV1beta2().Deployments("default").Delete(controllerName, &metav1.DeleteOptions{})

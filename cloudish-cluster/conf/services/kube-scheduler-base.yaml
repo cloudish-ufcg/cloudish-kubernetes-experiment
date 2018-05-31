@@ -18,9 +18,9 @@ spec:
     - --feature-gates=PodPriority=true
     - --kubeconfig=/etc/kubernetes/scheduler.conf
     - --v=5
-    #image: gcr.io/google_containers/kube-scheduler-amd64:v1.9.1
-    image: fabiomorais/kube-scheduler:v0.1.2
-    #image: cloudishjoao/kube-scheduler:v0.2.7
+    image: gcr.io/google_containers/kube-scheduler-amd64:v1.9.1
+    #image: fabiomorais/kube-scheduler:v0.1.2
+    #image: cloudishjoao/kube-scheduler:v0.3.8
     env:
     - name: PROM_ADDRESS
       #value: "http://prometheusapi.prom.svc.cluster.local:9090"
