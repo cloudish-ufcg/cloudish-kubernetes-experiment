@@ -27,7 +27,7 @@ spec:
       #value: "http://localhost:NEWPORT"
       value: "http://PROMADDR"
     - name: SAFETY_MARGIN
-      value: "0.0"
+      value: "15.0"
     livenessProbe:
       failureThreshold: 8
       httpGet:
