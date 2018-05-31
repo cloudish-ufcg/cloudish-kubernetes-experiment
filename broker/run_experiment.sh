@@ -1,11 +1,13 @@
 #!/bin/bash 
+INPUT_FILE=$1
+DURATION=$2
 
-INPUT_BASE=`echo $1 | sed 's/.csv//g'`
+INPUT_BASE=`echo $INPUT_FILE | sed 's/.csv//g'`
 OUTPUT_BASE=`date +%Y%m%d"_"%H%M%S`"_"$INPUT_BASE
 
 mkdir data/$OUTPUT_BASE
 
-go run broker.go $1
+go run broker.go $INPUT_FILE $DURATION
 
 KWPOD=`kubectl get pods -n kubewatch | grep -v NAME | awk '{print $1}'`
 
@@ -19,9 +21,9 @@ done
 
 sleep 10
 
-kubectl cp kubewatch/$KWPOD:/home/allocation.dat data/$OUTPUT_BASE/
-kubectl cp kubewatch/$KWPOD:/home/termination.dat data/$OUTPUT_BASE/
-kubectl cp kubewatch/$KWPOD:/home/waiting.dat data/$OUTPUT_BASE/
+kubectl cp kubewatch/$KWPOD:/home/allocation.dat data/$OUTPUT_BASE/allocation.dat
+kubectl cp kubewatch/$KWPOD:/home/termination.dat data/$OUTPUT_BASE/allocation.dat
+kubectl cp kubewatch/$KWPOD:/home/waiting.dat data/$OUTPUT_BASE/allocation.dat
 
 sleep 1
 
