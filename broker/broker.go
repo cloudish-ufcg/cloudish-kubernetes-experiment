@@ -10,8 +10,8 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	"time"
 	"sync"
+	"time"
 
 	appsv1beta2 "k8s.io/api/apps/v1beta2"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -87,7 +87,7 @@ func main() {
 	fmt.Println("ARG 1: ", argsWithoutProg[1])
 	if len(argsWithoutProg) > 1 {
 		experimentDurationInt, _ := strconv.Atoi(argsWithoutProg[1])
-		experimentDuration = experimentDurationInt//time.Duration(experimentDurationInt) * time.Second
+		experimentDuration = experimentDurationInt //time.Duration(experimentDurationInt) * time.Second
 	}
 
 	var timeRef = 0
@@ -159,7 +159,7 @@ func main() {
 
 func CreateAndManageControllerTermination(controllerName string, deployment *appsv1beta2.Deployment, expectedRuntime int, wg *sync.WaitGroup) {
 
-        clientset.AppsV1beta2().Deployments("default").Create(deployment)
+	clientset.AppsV1beta2().Deployments("default").Create(deployment)
 
 	time.Sleep(time.Duration(expectedRuntime) * time.Second)
 
@@ -168,7 +168,7 @@ func CreateAndManageControllerTermination(controllerName string, deployment *app
 	dump(out, "/root/broker.log")
 
 	//clientset.AppsV1beta2().Deployments("default").Delete(controllerName, &metav1.DeleteOptions{})
-	cmd := exec.Command("/usr/bin/kubectl", "delete", "deploy", "--all")
+	cmd := exec.Command("/usr/bin/kubectl", "delete", "deploy", controllerName)
 	cmd.Run()
 
 	wg.Done()
