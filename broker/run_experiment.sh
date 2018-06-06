@@ -22,8 +22,8 @@ done
 sleep 10
 
 kubectl cp kubewatch/$KWPOD:/home/allocation.dat data/$OUTPUT_BASE/allocation.dat
-kubectl cp kubewatch/$KWPOD:/home/termination.dat data/$OUTPUT_BASE/allocation.dat
-kubectl cp kubewatch/$KWPOD:/home/waiting.dat data/$OUTPUT_BASE/allocation.dat
+kubectl cp kubewatch/$KWPOD:/home/termination.dat data/$OUTPUT_BASE/termination.dat
+kubectl cp kubewatch/$KWPOD:/home/waiting.dat data/$OUTPUT_BASE/waiting.dat
 
 sleep 1
 

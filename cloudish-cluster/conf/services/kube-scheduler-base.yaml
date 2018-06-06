@@ -19,7 +19,7 @@ spec:
     - --kubeconfig=/etc/kubernetes/scheduler.conf
     - --v=5
     image: gcr.io/google_containers/kube-scheduler-amd64:v1.9.1
-    #image: fabiomorais/kube-scheduler:v0.1.2
+    #image: fabiomorais/kube-scheduler:v1.3.0
     #image: cloudishjoao/kube-scheduler:v0.3.8
     env:
     - name: PROM_ADDRESS

@@ -99,7 +99,7 @@ func main() {
 
 		for {
 
-			time.Sleep(time.Duration(1) * time.Second)
+			//time.Sleep(time.Duration(1) * time.Second)
 			//time.Sleep(time.Duration(500) * time.Millisecond)
 			record, err := r.Read()
 
