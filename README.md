@@ -1,4 +1,4 @@
-# Kuberbentes experiments
+# Kubernetes experiments
 
 To install the dependencies and configuring the environment to create the cluster (It includes Go, kubeadm and environment variables): 
 
