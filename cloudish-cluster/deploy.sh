@@ -101,7 +101,7 @@ export SERVICE_NAME=prometheus
 export ALT_NAMES='"prometheus.prom","prometheus.prom.svc"'
 echo '{"CN":"'${SERVICE_NAME}'","hosts":['${ALT_NAMES}'],"key":{"algo":"rsa","size":2048}}' | cfssl gencert -ca=ca.crt -ca-key=ca.key -config=serving-config.json - | cfssljson -bare apiserver
 
-cd /root/kubernetes-examples/cloudish-cluster
+cd /root/cloudish-kubernetes-experiment/cloudish-cluster
 
 echo ""
 echo ">>> Lauching prometheus"
