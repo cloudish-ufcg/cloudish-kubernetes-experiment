@@ -29,7 +29,7 @@ The experiment results will be saved in `/data` sub-directory of the `broker/` d
 #### Allocation data (`allocation.dat`):
 
 - `timestamp`: Refers to timestamp of allocation event.
-podName: Name of allocated pod.
+- `podName`: Name of allocated pod.
 - `controllerName`: Name of deployment to which the pod is associated.
 - `hostName`: The host where the pod was allocated.
 - `waitTime`: How long the pod has waited before start running.
