@@ -1,14 +1,19 @@
-# Kubernetes PoC experiments - SLO-driven scheduling
+# Kubernetes PoC experiments - QoS-driven scheduling
 
-To install the dependencies and configure the environment (including Go and kubeadm env variables) to create the cluster, execute this command in the master and worker nodes:
+To install the dependencies and configure the environment (including Go and kubeadm env variables) in orer to create the cluster, execute this command in the master and worker nodes:
 
 `$# ./cloudish-cluster/install.sh`
 
-To configure and deploy a kubernetes cluster with the SLO-driven scheduler, kube-watch and prometheus:
+To configure and deploy a kubernetes cluster with the QoS-driven scheduler, kube-watch and prometheus:
 
 `$# ./cloudish-cluster/deploy.sh`
 
-P.S. If you want to use a different image of kube watch or kube scheduler, you can edit base files (`cloudish-cluster/conf/kubewatch/kube-watch-base.yaml` and `cloudish-cluster/conf/services/kube-scheduler-base.yaml` respectively) before running the `deploy.sh` script.
+P.S. If you want to use a different image of kube watch or kube scheduler, you can edit base files (`cloudish-cluster/conf/kubewatch/kube-watch-base.yaml` and `cloudish-cluster/conf/services/kube-scheduler-base.yaml` respectively) before running the `deploy.sh` script. The images used in the paper experiments were: 
+
+- kube-watch: giovannifs/kube-watch:v0.2
+- prometheus: prom/prometheus:v2.2.0-rc.0
+- QoS-driven scheduler: viniciusbds/kube-scheduler:v3.7
+- priority-based scheduler: gcr.io/google_containers/kube-scheduler-amd64:v1.9.1
 
 ## Broker
 
@@ -46,3 +51,11 @@ The experiment results will be saved in `/data` sub-directory of the `broker/` d
 - `podName`: Name of terminated pod.
 - `controllerName`: Name of deployment to which the pod is associated.
 - `runtime`: How long the pod has run before termination.
+
+#### Starting data (`starting.dat`):
+
+- `timestamp`: Refers to timestamp of termination event.
+- `podName`: Name of allocated pod.
+- `controllerName`: Name of deployment to which the pod is associated.
+- `hostName`: The host where the pod was allocated.
+- `overhead`: The overhead of allocation, i.e. time between the scheduling decision and the moment when the pod was started.
