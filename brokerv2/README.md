@@ -5,7 +5,7 @@ to support multiple controllers. The main diference is that the this broker rece
 the **kind of controller**, the **number of replicas** (if the task is a deployment) **or paralelism** (if is a job), the **number of completions** (for the case of job)
 and the **qosMeasuring** (independent, concurrent, time_aggregated or task_aggregated)
 
-[see an example](https://github.com/cloudish-ufcg/cloudish-kubernetes-experiment/blob/support-multiple-controllers/brokerv2/input.example)
+[see an example](https://github.com/cloudish-ufcg/cloudish-kubernetes-experiment/blob/support-multiple-controllers/brokerv2/inputexample.csv)
 
 ## How to use
 
