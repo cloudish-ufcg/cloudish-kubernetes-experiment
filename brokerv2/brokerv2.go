@@ -82,9 +82,9 @@ func main() {
         inputFile := string(argsWithoutProg[0])
         var experimentDuration = 150 //time.Duration(150) * time.Second
 
-        fmt.Printf("INPUTFILE: %s", inputFile)
+        fmt.Printf("INPUTFILE: %s\n", inputFile)
+        fmt.Printf("SECONDS: %s\n", argsWithoutProg[1])
 
-        fmt.Printf("ARG 0: ", argsWithoutProg[1])
         if len(argsWithoutProg) > 1 {
                 experimentDurationInt, _ := strconv.Atoi(argsWithoutProg[1])
                 experimentDuration = experimentDurationInt //time.Duration(experimentDurationInt) * time.Second
