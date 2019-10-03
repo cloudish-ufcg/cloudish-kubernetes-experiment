@@ -58,4 +58,4 @@ The experiment results will be saved in `/data` sub-directory of the `brokerv2/`
 - `podName`: Name of pod.
 - `selectingPeriod` : The period that the scheduler algorithm takes to sort the pending queue and select the first pod.
 - `schedulingPeriod` : The period that the scheduler try schedule the first pod of the pending queue without preempt other one.
-- `preemptingPeriod` : The period that the scheduler try preempt running pods to make room to the new pod. When this field is empty, it means that the preemptPeriod was not need be calculed because de pod was scheduled directly.
+- `preemptingPeriod` : The period that the scheduler try preempt running pods to make room to allocate the new pod. When this field is empty, it means that the preemptingPeriod was not need be calculed because de pod was scheduled directly.
