@@ -82,7 +82,9 @@ func main() {
         inputFile := string(argsWithoutProg[0])
         var experimentDuration = 150 //time.Duration(150) * time.Second
 
-        fmt.Println("ARG 0: ", argsWithoutProg[1])
+        fmt.Printf("INPUTFILE: %s", inputFile)
+
+        fmt.Printf("ARG 0: ", argsWithoutProg[1])
         if len(argsWithoutProg) > 1 {
                 experimentDurationInt, _ := strconv.Atoi(argsWithoutProg[1])
                 experimentDuration = experimentDurationInt //time.Duration(experimentDurationInt) * time.Second
@@ -135,7 +137,7 @@ func main() {
 
 
 
-                                if controllerKind == "Deployment" {
+                                if controllerKind == "deployment" {
                                         deployment := getDeploymentSpec(controllerName, cpuReq, memReq, slo, class, &replicaOrParallelismInt32, qosMeasuring)
 
                                         fmt.Println("Reading new task...")
@@ -158,7 +160,7 @@ func main() {
                                                 go CreateAndManageDeploymentTermination(controllerName, deployment, experimentDuration-timeRef, &wg)
                                         }
 
-                                } else if controllerKind == "Job" {
+                                } else if controllerKind == "job" {
                                         job := getJobSpec(controllerName, cpuReq, memReq, slo, class, &replicaOrParallelismInt32, &completionsInt32, qosMeasuring)
 
                                         fmt.Println("Reading new task...")

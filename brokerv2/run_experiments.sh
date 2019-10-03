@@ -7,7 +7,7 @@ OUTPUT_BASE=`date +%Y%m%d"_"%H%M%S`"_"$INPUT_BASE
 
 mkdir data/$OUTPUT_BASE
 
-go run broker.go $INPUT_FILE $DURATION
+go run brokerv2.go $INPUT_FILE $DURATION
 
 KWPOD=`kubectl get pods -n kubewatch | grep -v NAME | awk '{print $1}'`
 
