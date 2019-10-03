@@ -13,9 +13,9 @@ After deploying the cluster infrastructure, we can submit a workload to be alloc
 
 `$# ./brokerv2/run_experiment.sh <workload-file> <duration>`
 
-Example for 1-hour experiment:
+Example:
 
-`$# ./brokerv2/run_experiment.sh synthetic-workload-20hosts-5min_onlyprod.csv 3600`
+`$# ./brokerv2/run_experiment.sh inputexample.csv 600`
 
 We consider that all commands are executed as root, so configuration files are saved in the `/root` directory.
 
