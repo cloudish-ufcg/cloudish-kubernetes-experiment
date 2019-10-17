@@ -128,10 +128,11 @@ func main() {
                                 if qosMeasuring == "time_aggregated" {
                                     qosMeasuringAux = "timeaggregated"
                                 } else if qosMeasuring == "task_aggregated" {
-                                    qosMeasuringAux = "task_aggregated"
+                                    qosMeasuringAux = "taskaggregated"
                                 } else {
                                     qosMeasuringAux = qosMeasuring
                                 }
+
                                 controllerName := class + "-" + controllerKind  + "-" + qosMeasuringAux + "-" + taskID + "-" + tokenGenerator()
                                 dump(controllerName+"\n", "controllers.csv")
 
