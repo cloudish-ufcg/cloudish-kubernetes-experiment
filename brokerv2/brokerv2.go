@@ -124,7 +124,15 @@ func main() {
                                 completions := string(record[14])
                                 qosMeasuring := string(record[15])
 
-                                controllerName := class + "-" + taskID + "-" + tokenGenerator()
+                                var qosMeasuringAux string
+                                if qosMeasuring == "time_aggregated" {
+                                    qosMeasuringAux = "timeaggregated"
+                                } else if qosMeasuring == "task_aggregated" {
+                                    qosMeasuringAux = "task_aggregated"
+                                } else {
+                                    qosMeasuringAux = qosMeasuring
+                                }
+                                controllerName := class + "-" + controllerKind  + "-" + qosMeasuringAux + "-" + taskID + "-" + tokenGenerator()
                                 dump(controllerName+"\n", "controllers.csv")
 
 
@@ -197,7 +205,10 @@ func main() {
 
 func CreateAndManageDeploymentTermination(controllerName string, deployment *appsv1beta2.Deployment, expectedRuntime int, wg *sync.WaitGroup) {
 
-        clientset.AppsV1beta2().Deployments("default").Create(deployment)
+        _, err := clientset.AppsV1beta2().Deployments("default").Create(deployment)
+        if err != nil {
+                fmt.Printf("[ERROR] Error while creating deployment information: ", err)
+        }
 
         time.Sleep(time.Duration(expectedRuntime) * time.Second)
 
