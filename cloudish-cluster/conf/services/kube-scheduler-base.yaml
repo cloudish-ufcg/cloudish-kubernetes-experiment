@@ -18,7 +18,8 @@ spec:
     - --feature-gates=PodPriority=true
     - --kubeconfig=/etc/kubernetes/scheduler.conf
     - --v=5
-    image: gcr.io/google_containers/kube-scheduler-amd64:v1.9.1
+    image: SCHEDULER
+    #image: gcr.io/google_containers/kube-scheduler-amd64:v1.9.1
     #image: fabiomorais/kube-scheduler:v1.3.0
     #image: cloudishjoao/kube-scheduler:v0.3.8
     env:
@@ -27,7 +28,15 @@ spec:
       #value: "http://localhost:NEWPORT"
       value: "http://PROMADDR"
     - name: SAFETY_MARGIN
-      value: "0.0"
+      #value: "30.0"
+      value: "SAFETYVALUE"
+    - name: MIN_RUNNING_TIME
+      #value: "30.0"
+      value: "MINRUNNINGTIMEVALUE"
+    - name: EXTRA_OVERHEAD
+      value: "OVERHEADVALUE"
+    - name: LIMIT_OVERHEAD
+      value: "LIMITOVERHEAD"
     livenessProbe:
       failureThreshold: 8
       httpGet:
@@ -52,3 +61,4 @@ spec:
       type: FileOrCreate
     name: kubeconfig
 status: {}
+

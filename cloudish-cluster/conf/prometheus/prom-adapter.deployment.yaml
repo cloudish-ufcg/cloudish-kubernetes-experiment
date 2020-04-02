@@ -20,7 +20,8 @@ spec:
     spec:
       serviceAccountName: prom-cm-adapter
       containers:
-      - image: directxman12/k8s-prometheus-adapter-amd64:latest 
+      #- image: directxman12/k8s-prometheus-adapter-amd64:latest 
+      - image: giovannifs/k8s-prometheus-adapter:v0.2.0
         name: cm-adapter
         args:
         - --secure-port=6443
