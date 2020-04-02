@@ -1,0 +1,309 @@
+I0705 14:07:53.522011       1 feature_gate.go:184] feature gates: map[PodPriority:true]
+W0705 14:07:53.522165       1 server.go:159] WARNING: all flags than --config are deprecated. Please begin using a config file ASAP.
+I0705 14:07:53.526426       1 healthz.go:70] No default health checks specified. Installing the ping handler.
+I0705 14:07:53.526443       1 healthz.go:74] Installing healthz checkers:"ping"
+I0705 14:07:53.526627       1 server.go:551] Version: multi_task-71+066f76765d56eb-dirty
+I0705 14:07:53.526822       1 factory.go:837] Creating scheduler from algorithm provider 'DefaultProvider'
+I0705 14:07:53.526833       1 factory.go:898] Creating scheduler with fit predicates 'map[NoVolumeZoneConflict:{} MaxEBSVolumeCount:{} MaxGCEPDVolumeCount:{} MaxAzureDiskVolumeCount:{} CheckNodeMemoryPressure:{} CheckVolumeBinding:{} MatchInterPodAffinity:{} NoDiskConflict:{} GeneralPredicates:{} CheckNodeDiskPressure:{} CheckNodeCondition:{} PodToleratesNodeTaints:{}]' and priority functions 'map[NodeAffinityPriority:{} TaintTolerationPriority:{} SelectorSpreadPriority:{} InterPodAffinityPriority:{} LeastRequestedPriority:{} BalancedResourceAllocation:{} NodePreferAvoidPodsPriority:{}]'
+I0705 14:07:53.527542       1 reflector.go:202] Starting reflector *v1beta1.PodDisruptionBudget (0s) from k8s.io/kubernetes/vendor/k8s.io/client-go/informers/factory.go:86
+I0705 14:07:53.527575       1 reflector.go:240] Listing and watching *v1beta1.PodDisruptionBudget from k8s.io/kubernetes/vendor/k8s.io/client-go/informers/factory.go:86
+I0705 14:07:53.527614       1 reflector.go:202] Starting reflector *v1.ReplicationController (0s) from k8s.io/kubernetes/vendor/k8s.io/client-go/informers/factory.go:86
+I0705 14:07:53.527628       1 reflector.go:240] Listing and watching *v1.ReplicationController from k8s.io/kubernetes/vendor/k8s.io/client-go/informers/factory.go:86
+I0705 14:07:53.528343       1 reflector.go:202] Starting reflector *v1beta1.StatefulSet (0s) from k8s.io/kubernetes/vendor/k8s.io/client-go/informers/factory.go:86
+I0705 14:07:53.528357       1 reflector.go:240] Listing and watching *v1beta1.StatefulSet from k8s.io/kubernetes/vendor/k8s.io/client-go/informers/factory.go:86
+I0705 14:07:53.529020       1 reflector.go:202] Starting reflector *v1beta1.ReplicaSet (0s) from k8s.io/kubernetes/vendor/k8s.io/client-go/informers/factory.go:86
+I0705 14:07:53.529039       1 reflector.go:240] Listing and watching *v1beta1.ReplicaSet from k8s.io/kubernetes/vendor/k8s.io/client-go/informers/factory.go:86
+I0705 14:07:53.529727       1 server.go:570] starting healthz server on 127.0.0.1:10251
+I0705 14:07:53.529971       1 reflector.go:202] Starting reflector *v1.Pod (0s) from k8s.io/kubernetes/plugin/cmd/kube-scheduler/app/server.go:590
+I0705 14:07:53.529982       1 reflector.go:240] Listing and watching *v1.Pod from k8s.io/kubernetes/plugin/cmd/kube-scheduler/app/server.go:590
+I0705 14:07:53.530562       1 reflector.go:202] Starting reflector *v1.PersistentVolumeClaim (0s) from k8s.io/kubernetes/vendor/k8s.io/client-go/informers/factory.go:86
+I0705 14:07:53.530582       1 reflector.go:240] Listing and watching *v1.PersistentVolumeClaim from k8s.io/kubernetes/vendor/k8s.io/client-go/informers/factory.go:86
+I0705 14:07:53.530931       1 reflector.go:202] Starting reflector *v1.Service (0s) from k8s.io/kubernetes/vendor/k8s.io/client-go/informers/factory.go:86
+I0705 14:07:53.530942       1 reflector.go:240] Listing and watching *v1.Service from k8s.io/kubernetes/vendor/k8s.io/client-go/informers/factory.go:86
+I0705 14:07:53.531532       1 reflector.go:202] Starting reflector *v1.Node (0s) from k8s.io/kubernetes/vendor/k8s.io/client-go/informers/factory.go:86
+I0705 14:07:53.531550       1 reflector.go:240] Listing and watching *v1.Node from k8s.io/kubernetes/vendor/k8s.io/client-go/informers/factory.go:86
+I0705 14:07:53.536981       1 reflector.go:202] Starting reflector *v1.PersistentVolume (0s) from k8s.io/kubernetes/vendor/k8s.io/client-go/informers/factory.go:86
+I0705 14:07:53.537000       1 reflector.go:240] Listing and watching *v1.PersistentVolume from k8s.io/kubernetes/vendor/k8s.io/client-go/informers/factory.go:86
+I0705 14:07:53.627364       1 shared_informer.go:122] caches populated
+I0705 14:07:53.727658       1 shared_informer.go:122] caches populated
+I0705 14:07:53.827837       1 shared_informer.go:122] caches populated
+I0705 14:07:53.928017       1 shared_informer.go:122] caches populated
+I0705 14:07:54.028239       1 shared_informer.go:122] caches populated
+I0705 14:07:54.128421       1 shared_informer.go:122] caches populated
+I0705 14:07:54.228554       1 shared_informer.go:122] caches populated
+I0705 14:07:54.328719       1 shared_informer.go:122] caches populated
+I0705 14:07:54.328767       1 controller_utils.go:1019] Waiting for caches to sync for scheduler controller
+I0705 14:07:54.428936       1 shared_informer.go:122] caches populated
+I0705 14:07:54.428962       1 controller_utils.go:1026] Caches are synced for scheduler controller
+I0705 14:07:54.428989       1 leaderelection.go:174] attempting to acquire leader lease...
+I0705 14:07:54.436324       1 leaderelection.go:184] successfully acquired lease kube-system/kube-scheduler
+I0705 14:07:54.536963       1 shared_informer.go:122] caches populated
+I0705 14:07:54.537048       1 scheduler.go:460] NEXTPOD INIT: %!(EXTRA time.Time=2019-07-05 14:07:54.53700282 +0000 UTC)
+I0705 14:07:54.537090       1 cloudish_queue.go:109] POPCALL INIT: %!(EXTRA time.Time=2019-07-05 14:07:54.537083865 +0000 UTC)
+I0705 14:07:56.442085       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:07:58.450264       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:08:00.457775       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:08:02.466273       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:08:04.474792       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:08:06.480802       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:08:08.668251       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:08:10.688975       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:08:12.709953       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:08:12.740913       1 cloudish_queue.go:200] QOS_MEASURING -l:  FOR %!(EXTRA string=)
+I0705 14:08:12.740942       1 cloudish_queue.go:158] [POPCALL] Map of controllers:%!(EXTRA map[string]map[string]core.QoSMetric=map[prometheus-6b9559f567:map[]])
+I0705 14:08:12.740966       1 cloudish_queue.go:162] [POPCALL] HEAP SIZE:%!(EXTRA int=1)
+I0705 14:08:12.740974       1 cloudish_queue.go:166] [POPCALL] CHOSEN POD:%!(EXTRA string=prometheus-6b9559f567-d795v)
+I0705 14:08:12.740979       1 cloudish_queue.go:173] POPCALL FINAL: %!(EXTRA time.Time=2019-07-05 14:08:12.74097658 +0000 UTC)
+I0705 14:08:12.741002       1 cloudish_queue.go:174] POPCALL ELAPSED TIME: %!(EXTRA float64=18.203892715)
+[Pod to string] :  &Pod{ObjectMeta:k8s_io_apimachinery_pkg_apis_meta_v1.ObjectMeta{Name:prometheus-6b9559f567-d795v,GenerateName:prometheus-6b9559f567-,Namespace:prom,SelfLink:/api/v1/namespaces/prom/pods/prometheus-6b9559f567-d795v,UID:5359d2d5-9f2e-11e9-95da-fa163e2034c6,ResourceVersion:14574947,Generation:0,CreationTimestamp:2019-07-05 14:08:12 +0000 UTC,DeletionTimestamp:<nil>,DeletionGracePeriodSeconds:nil,Labels:map[string]string{app: prometheus,pod-template-hash: 2651159123,},Annotations:map[string]string{prometheus.io/path: /metrics,prometheus.io/port: 9091,prometheus.io/scrape: true,},OwnerReferences:[{extensions/v1beta1 ReplicaSet prometheus-6b9559f567 18828fa9-818a-11e9-8c18-fa163e2034c6 0xc4202674ba 0xc4202674bb}],Finalizers:[],ClusterName:,Initializers:nil,},Spec:PodSpec{Volumes:[{config-volume {nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil ConfigMapVolumeSource{LocalObjectReference:LocalObjectReference{Name:prometheus,},Items:[],DefaultMode:*420,Optional:nil,} nil nil nil nil nil nil nil nil}} {serving-certs {nil nil nil nil nil &SecretVolumeSource{SecretName:serving-cm-adapter,Items:[],DefaultMode:*420,Optional:nil,} nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil}} {prom-cm-adapter-token-xlmz6 {nil nil nil nil nil &SecretVolumeSource{SecretName:prom-cm-adapter-token-xlmz6,Items:[],DefaultMode:*420,Optional:nil,} nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil}}],Containers:[{cm-adapter visenzek8s/k8s-prometheus-adapter:v0.2.0 [] [--secure-port=6443 --logtostderr=true --tls-cert-file=/var/run/serving-certs/tls.crt --tls-private-key-file=/var/run/serving-certs/tls.key --prometheus-url=http://localhost:9090 --metrics-relist-interval=1m --rate-interval=30s --discovery-interval=10m --v=4]  [{https 0 6443 TCP }] [] [] {map[] map[]} [{serving-certs true /var/run/serving-certs  <nil>} {prom-cm-adapter-token-xlmz6 true /var/run/secrets/kubernetes.io/serviceaccount  <nil>}] [] nil nil nil /dev/termination-log File IfNotPresent nil false false false} {prometheus prom/prometheus:v2.2.0-rc.0 [] [--query.max-concurrency=200 --web.max-connections=2048 --config.file=/etc/prometheus/prometheus.yml]  [{prom-web 0 9090 TCP }] [] [] {map[] map[]} [{config-volume false /etc/prometheus  <nil>} {prom-cm-adapter-token-xlmz6 true /var/run/secrets/kubernetes.io/serviceaccount  <nil>}] [] nil nil nil /dev/termination-log File IfNotPresent nil false false false} {pushgateway prom/pushgateway [] []  [{http 0 9091 TCP }] [] [] {map[] map[]} [{prom-cm-adapter-token-xlmz6 true /var/run/secrets/kubernetes.io/serviceaccount  <nil>}] [] nil nil nil /dev/termination-log File Always nil false false false}],RestartPolicy:Always,TerminationGracePeriodSeconds:*30,ActiveDeadlineSeconds:nil,DNSPolicy:ClusterFirst,NodeSelector:map[string]string{kubernetes.io/hostname: kubemaster-sched-config,},ServiceAccountName:prom-cm-adapter,DeprecatedServiceAccount:prom-cm-adapter,NodeName:,HostNetwork:false,HostPID:false,HostIPC:false,SecurityContext:&PodSecurityContext{SELinuxOptions:nil,RunAsUser:nil,RunAsNonRoot:nil,SupplementalGroups:[],FSGroup:nil,},ImagePullSecrets:[],Hostname:,Subdomain:,Affinity:nil,SchedulerName:default-scheduler,InitContainers:[],AutomountServiceAccountToken:nil,Tolerations:[{node.kubernetes.io/not-ready Exists  NoExecute 0xc420267730} {node.kubernetes.io/unreachable Exists  NoExecute 0xc420267750}],HostAliases:[],PriorityClassName:,Priority:*1000,DNSConfig:nil,},Status:PodStatus{Phase:Pending,Conditions:[],Message:,Reason:,HostIP:,PodIP:,StartTime:<nil>,ContainerStatuses:[],QOSClass:BestEffort,InitContainerStatuses:[],},}
+I0705 14:08:12.741025       1 factory.go:1025] About to try and schedule pod prometheus-6b9559f567-d795v
+I0705 14:08:12.741046       1 scheduler.go:463] NEXTPOD FINAL: %!(EXTRA time.Time=2019-07-05 14:08:12.741039676 +0000 UTC)
+I0705 14:08:12.741057       1 scheduler.go:464] NEXPOD ELAPSED TIME: %!(EXTRA float64=18.204036856)
+I0705 14:08:12.741065       1 scheduler.go:472] Attempting to schedule pod: prom/prometheus-6b9559f567-d795v
+I0705 14:08:12.741078       1 cloudish_scheduler.go:106] Executando o cloudish scheduler - viniciusbds/kube-scheduler:v7.6 !!!!!!
+I0705 14:08:12.741085       1 cloudish_scheduler.go:108] | ------- SAFETY_MARGIN: %!(EXTRA float64=10)
+I0705 14:08:12.741089       1 cloudish_scheduler.go:109] | ------- EXTRA_OVERHEAD: %!(EXTRA float64=0)
+I0705 14:08:12.741094       1 cloudish_scheduler.go:110] | ------- LIMIT_OVERHEAD ? %!(EXTRA bool=true)
+I0705 14:08:12.741949       1 scheduler.go:427] --- Schedule binding: %!(EXTRA *v1.Binding=&Binding{ObjectMeta:k8s_io_apimachinery_pkg_apis_meta_v1.ObjectMeta{Name:prometheus-6b9559f567-d795v,GenerateName:,Namespace:prom,SelfLink:,UID:5359d2d5-9f2e-11e9-95da-fa163e2034c6,ResourceVersion:,Generation:0,CreationTimestamp:0001-01-01 00:00:00 +0000 UTC,DeletionTimestamp:<nil>,DeletionGracePeriodSeconds:nil,Labels:map[string]string{},Annotations:map[string]string{prometheus.io/path: /metrics,prometheus.io/port: 9091,prometheus.io/scrape: true,},OwnerReferences:[],Finalizers:[],ClusterName:,Initializers:nil,},Target:ObjectReference{Kind:Node,Namespace:,Name:kubemaster-sched-config,UID:,APIVersion:,ResourceVersion:,FieldPath:,},})
+I0705 14:08:12.742048       1 factory.go:1245] Attempting to bind prometheus-6b9559f567-d795v to kubemaster-sched-config
+I0705 14:08:12.742147       1 scheduler.go:460] NEXTPOD INIT: %!(EXTRA time.Time=2019-07-05 14:08:12.742142407 +0000 UTC)
+I0705 14:08:12.742167       1 cloudish_queue.go:109] POPCALL INIT: %!(EXTRA time.Time=2019-07-05 14:08:12.742163569 +0000 UTC)
+I0705 14:08:12.760230       1 cache.go:153] Finished binding for pod prom/prometheus-6b9559f567-d795v. Can be expired.
+I0705 14:08:12.760262       1 scheduler.go:451] [CLOUDISH] Before scheduled event for Pod prometheus-6b9559f567-d795v
+I0705 14:08:12.760297       1 scheduler.go:453] [CLOUDISH] After scheduled event for Pod prometheus-6b9559f567-d795v
+I0705 14:08:14.721611       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:08:16.729134       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:08:18.736952       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:08:20.770316       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:08:22.779213       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:08:24.786847       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:08:26.794448       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:08:28.634624       1 cloudish_queue.go:200] QOS_MEASURING -l:  FOR %!(EXTRA string=)
+I0705 14:08:28.634657       1 cloudish_queue.go:158] [POPCALL] Map of controllers:%!(EXTRA map[string]map[string]core.QoSMetric=map[kube-watch-5bd87c8f7d:map[]])
+I0705 14:08:28.634691       1 cloudish_queue.go:162] [POPCALL] HEAP SIZE:%!(EXTRA int=1)
+I0705 14:08:28.634705       1 cloudish_queue.go:166] [POPCALL] CHOSEN POD:%!(EXTRA string=kube-watch-5bd87c8f7d-dz7g7)
+I0705 14:08:28.634713       1 cloudish_queue.go:173] POPCALL FINAL: %!(EXTRA time.Time=2019-07-05 14:08:28.634709818 +0000 UTC)
+I0705 14:08:28.634730       1 cloudish_queue.go:174] POPCALL ELAPSED TIME: %!(EXTRA float64=15.892546249)
+I0705 14:08:28.634778       1 factory.go:1025] About to try and schedule pod kube-watch-5bd87c8f7d-dz7g7
+I0705 14:08:28.634798       1 scheduler.go:463] NEXTPOD FINAL: %!(EXTRA time.Time=2019-07-05 14:08:28.634792875 +0000 UTC)
+I0705 14:08:28.634815       1 scheduler.go:464] NEXPOD ELAPSED TIME: %!(EXTRA float64=15.892650468)
+I0705 14:08:28.634826       1 scheduler.go:472] Attempting to schedule pod: kubewatch/kube-watch-5bd87c8f7d-dz7g7
+I0705 14:08:28.634908       1 cloudish_scheduler.go:106] Executando o cloudish scheduler - viniciusbds/kube-scheduler:v7.6 !!!!!!
+I0705 14:08:28.634952       1 cloudish_scheduler.go:108] | ------- SAFETY_MARGIN: %!(EXTRA float64=10)
+I0705 14:08:28.634961       1 cloudish_scheduler.go:109] | ------- EXTRA_OVERHEAD: %!(EXTRA float64=0)
+I0705 14:08:28.634975       1 cloudish_scheduler.go:110] | ------- LIMIT_OVERHEAD ? %!(EXTRA bool=true)
+[Pod to string] :  &Pod{ObjectMeta:k8s_io_apimachinery_pkg_apis_meta_v1.ObjectMeta{Name:kube-watch-5bd87c8f7d-dz7g7,GenerateName:kube-watch-5bd87c8f7d-,Namespace:kubewatch,SelfLink:/api/v1/namespaces/kubewatch/pods/kube-watch-5bd87c8f7d-dz7g7,UID:5cd59423-9f2e-11e9-95da-fa163e2034c6,ResourceVersion:14575010,Generation:0,CreationTimestamp:2019-07-05 14:08:28 +0000 UTC,DeletionTimestamp:<nil>,DeletionGracePeriodSeconds:nil,Labels:map[string]string{app: kube-watch,pod-template-hash: 1684374938,},Annotations:map[string]string{},OwnerReferences:[{extensions/v1beta1 ReplicaSet kube-watch-5bd87c8f7d 5cd32159-9f2e-11e9-95da-fa163e2034c6 0xc4202bfdda 0xc4202bfddb}],Finalizers:[],ClusterName:,Initializers:nil,},Spec:PodSpec{Volumes:[{default-token-vsj7w {nil nil nil nil nil SecretVolumeSource{SecretName:default-token-vsj7w,Items:[],DefaultMode:*420,Optional:nil,} nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil}}],Containers:[{kube-watch giovannifs/kube-watch:v0.3.2 [] [run --in-cluster --url https://hooks.slack.com/services/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 --pushgateway-address 10.111.217.190:9091 --api-address http://10.111.61.217:9090 --waiting-tolerance 0.0 --watch-kind Pod]  [] [] [] {map[] map[]} [{default-token-vsj7w true /var/run/secrets/kubernetes.io/serviceaccount  <nil>}] [] nil nil nil /dev/termination-log File Always nil false false false}],RestartPolicy:Always,TerminationGracePeriodSeconds:*30,ActiveDeadlineSeconds:nil,DNSPolicy:ClusterFirst,NodeSelector:map[string]string{kubernetes.io/hostname: kubemaster-sched-config,},ServiceAccountName:default,DeprecatedServiceAccount:default,NodeName:,HostNetwork:false,HostPID:false,HostIPC:false,SecurityContext:&PodSecurityContext{SELinuxOptions:nil,RunAsUser:nil,RunAsNonRoot:nil,SupplementalGroups:[],FSGroup:nil,},ImagePullSecrets:[],Hostname:,Subdomain:,Affinity:nil,SchedulerName:default-scheduler,InitContainers:[],AutomountServiceAccountToken:nil,Tolerations:[{node.kubernetes.io/not-ready Exists  NoExecute 0xc4202bff30} {node.kubernetes.io/unreachable Exists  NoExecute 0xc4202bff50}],HostAliases:[],PriorityClassName:,Priority:*1000,DNSConfig:nil,},Status:PodStatus{Phase:Pending,Conditions:[],Message:,Reason:,HostIP:,PodIP:,StartTime:<nil>,ContainerStatuses:[],QOSClass:BestEffort,InitContainerStatuses:[],},}
+I0705 14:08:28.635985       1 scheduler.go:460] NEXTPOD INIT: %!(EXTRA time.Time=2019-07-05 14:08:28.635975147 +0000 UTC)
+I0705 14:08:28.636040       1 cloudish_queue.go:109] POPCALL INIT: %!(EXTRA time.Time=2019-07-05 14:08:28.636036104 +0000 UTC)
+I0705 14:08:28.635976       1 scheduler.go:427] --- Schedule binding: %!(EXTRA *v1.Binding=&Binding{ObjectMeta:k8s_io_apimachinery_pkg_apis_meta_v1.ObjectMeta{Name:kube-watch-5bd87c8f7d-dz7g7,GenerateName:,Namespace:kubewatch,SelfLink:,UID:5cd59423-9f2e-11e9-95da-fa163e2034c6,ResourceVersion:,Generation:0,CreationTimestamp:0001-01-01 00:00:00 +0000 UTC,DeletionTimestamp:<nil>,DeletionGracePeriodSeconds:nil,Labels:map[string]string{},Annotations:map[string]string{},OwnerReferences:[],Finalizers:[],ClusterName:,Initializers:nil,},Target:ObjectReference{Kind:Node,Namespace:,Name:kubemaster-sched-config,UID:,APIVersion:,ResourceVersion:,FieldPath:,},})
+I0705 14:08:28.636085       1 factory.go:1245] Attempting to bind kube-watch-5bd87c8f7d-dz7g7 to kubemaster-sched-config
+I0705 14:08:28.642466       1 cache.go:153] Finished binding for pod kubewatch/kube-watch-5bd87c8f7d-dz7g7. Can be expired.
+I0705 14:08:28.642487       1 scheduler.go:451] [CLOUDISH] Before scheduled event for Pod kube-watch-5bd87c8f7d-dz7g7
+I0705 14:08:28.642662       1 scheduler.go:453] [CLOUDISH] After scheduled event for Pod kube-watch-5bd87c8f7d-dz7g7
+I0705 14:08:29.114801       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:08:31.122839       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:08:33.130829       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:08:35.139835       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:08:37.147089       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:08:39.154684       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:08:41.163260       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:08:43.171592       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:08:45.179797       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:08:47.193183       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:08:49.200060       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:08:51.208588       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:08:53.214829       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:08:55.221109       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:08:57.229651       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:08:59.236608       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:09:01.243938       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:09:03.251380       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:09:05.260924       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:09:07.268109       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:09:09.275775       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:09:11.285090       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:09:13.294062       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:09:15.302359       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:09:17.309376       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:09:19.318180       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:09:21.328006       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:09:23.336639       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:09:25.344686       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:09:27.352662       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:09:29.363635       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:09:31.370913       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:09:33.379473       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:09:35.386897       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:09:37.394727       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:09:39.403281       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:09:41.411065       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:09:43.419569       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:09:45.427550       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:09:47.435985       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:09:49.443806       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:09:51.451957       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:09:53.460739       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:09:55.468614       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:09:57.477249       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:09:59.485496       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:10:01.493184       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:10:03.501526       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:10:05.510370       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:10:07.517598       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:10:09.532513       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:10:11.543669       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:10:13.553350       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:10:15.560580       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:10:17.567632       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:10:19.575183       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:10:21.583729       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:10:23.592961       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:10:25.600739       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:10:27.609159       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:10:29.618921       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:10:31.627295       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:10:33.633978       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:10:35.641780       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:10:37.649368       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:10:39.656941       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:10:41.665403       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:10:43.671925       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:10:45.680637       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:10:47.688153       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:10:49.694874       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:10:51.703324       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:10:53.711210       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:10:55.718505       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:10:57.727719       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:10:59.735131       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:11:01.743169       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:11:03.749777       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:11:05.758499       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:11:07.767099       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:11:09.773606       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:11:11.781393       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:11:13.788214       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:11:15.796255       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:11:17.810594       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:11:19.816650       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:11:21.825858       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:11:23.834411       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:11:25.841829       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:11:27.850627       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:11:29.859045       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:11:31.867055       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:11:33.874585       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:11:35.883599       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:11:37.892723       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:11:39.901620       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:11:41.911395       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:11:43.920826       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:11:45.928241       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:11:47.934922       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:11:49.943156       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:11:51.950885       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:11:53.959443       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:11:55.971809       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:11:57.982020       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:11:59.991495       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:12:02.001790       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:12:04.009821       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:12:06.019765       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:12:08.041774       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:12:10.049426       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:12:12.057760       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:12:14.067416       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:12:16.076058       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:12:18.087757       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:12:20.096243       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:12:22.105044       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:12:24.113319       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:12:26.123304       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:12:28.129570       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:12:30.145845       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:12:32.152589       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:12:34.160261       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:12:36.170900       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:12:38.179718       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:12:40.189137       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:12:42.197922       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:12:44.210046       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:12:46.219739       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:12:48.230641       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:12:50.240312       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:12:52.249064       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:12:54.256023       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:12:56.264316       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:12:58.272809       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:13:00.281874       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:13:02.292280       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:13:04.301662       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:13:06.309766       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:13:08.317579       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:13:10.325969       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:13:12.346080       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:13:12.572656       1 reflector.go:428] k8s.io/kubernetes/vendor/k8s.io/client-go/informers/factory.go:86: Watch close - *v1.ReplicationController total 0 items received
+I0705 14:13:14.354787       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:13:16.362088       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:13:18.371467       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:13:20.379835       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:13:22.388688       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:13:22.579773       1 reflector.go:428] k8s.io/kubernetes/vendor/k8s.io/client-go/informers/factory.go:86: Watch close - *v1.Node total 68 items received
+I0705 14:13:24.397146       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:13:26.405121       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:13:28.416568       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:13:30.424522       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:13:32.434090       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:13:34.443724       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:13:36.453931       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:13:38.463967       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:13:39.575995       1 reflector.go:428] k8s.io/kubernetes/vendor/k8s.io/client-go/informers/factory.go:86: Watch close - *v1.Service total 0 items received
+I0705 14:13:40.471352       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:13:42.489479       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:13:44.498984       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:13:46.508806       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:13:48.517635       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:13:50.527818       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:13:52.538135       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:13:54.545590       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:13:56.553559       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:13:58.560985       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:14:00.569243       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:14:02.577309       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:14:04.586391       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:14:06.593581       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:14:08.601278       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:14:10.610144       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:14:12.618023       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:14:14.627335       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:14:16.635746       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:14:18.643584       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:14:20.652402       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:14:22.660234       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:14:24.670905       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:14:26.678209       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:14:28.687423       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:14:30.697115       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:14:32.704805       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:14:34.712424       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:14:36.720356       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:14:38.728809       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:14:40.737345       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:14:42.746170       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:14:44.755639       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:14:46.769818       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:14:48.778650       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:14:50.787312       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:14:52.796759       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:14:54.805247       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:14:56.820562       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:14:58.829950       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:15:00.572391       1 reflector.go:428] k8s.io/kubernetes/vendor/k8s.io/client-go/informers/factory.go:86: Watch close - *v1.PersistentVolume total 0 items received
+I0705 14:15:00.837433       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:15:02.845975       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:15:04.571373       1 reflector.go:428] k8s.io/kubernetes/plugin/cmd/kube-scheduler/app/server.go:590: Watch close - *v1.Pod total 26 items received
+I0705 14:15:04.854174       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:15:06.864152       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:15:08.872665       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:15:10.879696       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler
+I0705 14:15:12.898299       1 leaderelection.go:199] successfully renewed lease kube-system/kube-scheduler

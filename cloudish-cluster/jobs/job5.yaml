@@ -1,0 +1,21 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: job5
+spec:
+  completions: 10
+  parallelism: 3
+  #backoffLimit: 4
+  #activeDeadlineSeconds: 20
+  template:
+    metadata:
+      annotations:
+        slo: "0.5"
+        controller: "job5"
+    spec:
+      terminationGracePeriodSeconds: 0
+      containers:
+      - name: ubuntu
+        image: ubuntu
+        command: ["sleep", "30"]
+      restartPolicy: Never

@@ -1,0 +1,28 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: job9
+spec:
+  completions: 2
+  parallelism: 2
+  #backoffLimit: 4
+  #activeDeadlineSeconds: 20
+  template:
+    metadata:
+      annotations:
+        slo: "0.5"
+        controller: "job9"
+    spec:
+      terminationGracePeriodSeconds: 0
+      containers:
+      - name: nginx
+        image: nginx:1.15
+        command: ["sleep", "1800"]
+        resources:
+          limits:
+            cpu: 3
+            memory: 200Mi
+          requests:
+            cpu: 3
+            memory: 200Mi
+      restartPolicy: Never

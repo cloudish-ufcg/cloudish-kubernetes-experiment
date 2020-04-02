@@ -1,0 +1,28 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: job4
+spec:
+  completions: 10
+  parallelism: 2
+  #backoffLimit: 4
+  #activeDeadlineSeconds: 20
+  template:
+    metadata:
+      annotations:
+        slo: "0.9"
+        controller: "job4"
+    spec:
+      terminationGracePeriodSeconds: 0
+      containers:
+      - name: ubuntu
+        image: ubuntu
+        command: ["sleep", "100"]
+        resources:
+          limits:
+            cpu: 3
+            memory: 200Mi
+          requests:
+            cpu: 3
+            memory: 200Mi
+      restartPolicy: Never

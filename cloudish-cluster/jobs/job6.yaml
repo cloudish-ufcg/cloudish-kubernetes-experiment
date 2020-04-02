@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: job6
+spec:
+  completions: 20
+  parallelism: 4 
+  #backoffLimit: 4
+  #activeDeadlineSeconds: 20
+  template:
+    metadata:
+      annotations:
+        slo: "0.5"
+        controller: "job6"
+        #qos_measuring: "independent, concurrent, task_aggregated, time_aggregated"
+    spec:
+      terminationGracePeriodSeconds: 0
+      containers:
+      - name: ubuntu
+        image: ubuntu
+        command: ["sleep", "30"]
+      restartPolicy: Never
